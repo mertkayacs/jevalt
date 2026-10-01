@@ -141,6 +141,20 @@ COMPARE_PROBES = [  # probe id, row label, format, short name for sentences; low
 OTHER_MODELS = ["intern-decision-4b", "kev-4b", "laya"]
 OTHER_NAMES = {"intern-decision-4b": "Intern-Decision-4B", "kev-4b": "Kev-4B", "laya": "Laya"}
 COMPARE_FILES = "https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison"
+VIDEOS = "https://huggingface.co/datasets/mertkayacs/emberwick-videos"
+GIF_CAPTION = {
+    "en": "Emberwick: every villager asks Deem-4B what to do next. Nothing is scripted.",
+    "tr": "Emberwick: her köylü bir sonraki adımını Karar-4B'ye soruyor. Hiçbir sahne önceden yazılmadı.",
+    "de": "Emberwick: Jeder Dorfbewohner fragt Wähler-4B, was als Nächstes zu tun ist. Nichts ist vorab festgelegt.",
+}
+
+
+def media_block(lang: str) -> str:
+    """The village clip in the model's language on top (4K GIF), then the share card."""
+    repo = MODELS[lang]["repo"]
+    return (f"![{GIF_CAPTION[lang]}]({VIDEOS}/resolve/main/gifs/emberwick-{lang}.gif)\n\n"
+            f"*{GIF_CAPTION[lang]}* [More clips]({VIDEOS}).\n\n"
+            f"![{MODELS[lang]['name']}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/card.png)\n\n")
 
 
 def _bold_best(values: list[float | None], cells: list[str], higher: bool) -> list[str]:
@@ -232,6 +246,55 @@ Where the others do better: {'; '.join(others)}. Result files and every decision
 """
 
 
+JEV_NOTES = "https://docs.typesafe.ai/model-jaggedness/jev-1.13"
+JEV_AUDIT = "https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md"
+CHART_ALT = {
+    "langs": "Accuracy on English, Turkish and German decisions and on typed-decisions: JevAlt, Intern-Decision-4B, Kev-4B and Laya",
+    "fixes": "Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya",
+    "jev": "What Jev 1.13 lacks and JevAlt has: thinking when unsure, an unknown answer, coverage sets, native Turkish and German, open weights, repeatable answers",
+}
+
+
+def charts_section(lang: str, comp: dict, notes: str = "") -> str:
+    """Results as three charts in the model's language (assets/<chart>.png in the model repo), one line on
+    method, where the other models do better, and the significance notes folded away."""
+    key = {"en": "deem-4b", "tr": "karar-4b", "de": "wahler-4b"}[lang]
+    name, repo = MODELS[lang]["name"], MODELS[lang]["repo"]
+    behind = {"kev-4b": [], "laya": []}
+    for suite in COMPARE_ROWS[lang]:
+        row = comp["suites"].get(suite, {})
+        for other in behind:
+            if key in row and other in row and row[other]["accuracy"] > row[key]["accuracy"]:
+                behind[other].append(SUITE_NAMES[suite])
+    for probe, _, _, short in COMPARE_PROBES:
+        row = comp["probes"].get(probe, {})
+        for other in behind:
+            if key in row and other in row and row[other] < row[key]:
+                behind[other].append(short)
+
+    def where(items):
+        return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+    both = [x for x in behind["kev-4b"] if x in behind["laya"]]
+    others = []
+    if both:
+        others.append(f"Kev-4B and Laya both do better on {where(both)}")
+    if only := [x for x in behind["kev-4b"] if x not in both]:
+        others.append(f"Kev-4B does better on {where(only)}")
+    if only := [x for x in behind["laya"] if x not in both]:
+        others.append(f"Laya does better on {where(only)}")
+    others.append("Laya is far smaller and faster")
+    charts = "\n\n".join(f"![{CHART_ALT[c]}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/{c}.png)" for c in CHART_ALT)
+    folded = f"\n<details>\n<summary>Significance and caveats</summary>\n\n{notes}\n\n</details>\n" if notes else ""
+    return f"""## Results
+
+{charts}
+
+Same items and client for every model, each as shipped: [Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) r10 and [Laya](https://huggingface.co/convaiinnovations/laya) 0.3.22 on their own servers with their own calibration. Jev 1.13 rows come from [TypeSafe's notes]({JEV_NOTES}) and an [independent audit]({JEV_AUDIT}). The held-out tests come from JevAlt's own data pipeline, so they favour JevAlt. {'; '.join(others)}. Every number and every decision: [results/comparison]({COMPARE_FILES}).
+{folded}
+"""
+
+
 def _training_section(training: dict | None) -> str:
     if not training:
         return ""
@@ -276,6 +339,7 @@ def card(
     probe_baseline: dict | None = None,
     notes: str = "",
     comparison: dict | None = None,
+    media: bool = False,
 ) -> str:
     m = MODELS[lang]
     name = m["name"]
@@ -297,14 +361,16 @@ def card(
 
     probe_tbl = _probe_table(probe_results, probe_baseline, name, "Intern-Decision-4B")
     probe_sec = f"## Probes\n\nOn 100 typed-decisions items, same client for both models.\n\n{probe_tbl}\n\n" if probe_tbl else ""
-    if comparison:  # the comparison carries the same probes plus Kev-4B and Laya
-        probe_sec = comparison_section(lang, comparison)
+    results = (f"## Results\n\nHeld-out suites, same prompts and client for both models, each at its fitted calibration.\n\n"
+               f"{results_table(ours, base, suites, name, 'Intern-Decision-4B')}\n\n{notes}\n\n{probe_sec}")
+    if comparison:  # charts carry the start checkpoint, Kev-4B, Laya and Jev 1.13; the tables stay in the result files
+        results = charts_section(lang, comparison, notes)
     article = "An" if m["language"][0] in "AEIOU" else "A"
     training_sec = _training_section(training)
 
     return head + f"""# {name}
 
-{article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
+{media_block(lang) if media else ''}{article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
 
 If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
 
@@ -333,15 +399,7 @@ from typesafe_sdk import TypeSafeClient, Choice, Noul
 client = TypeSafeClient(api_key="local", base_url="http://127.0.0.1:8000")
 ```
 
-## Results
-
-Held-out suites, same prompts and client for both models, each at its fitted calibration.
-
-{results_table(ours, base, suites, name, 'Intern-Decision-4B')}
-
-{notes}
-
-{probe_sec}{training_sec}
+{results}{training_sec}
 ## Intended use
 
 - Routing, tagging and moderation at volume.
@@ -432,6 +490,8 @@ def gguf_card(lang: str, export_report: dict | None, memory_report: dict | None)
 
     return head + f"""# {name} GGUF
 
+![{GIF_CAPTION[lang]}]({VIDEOS}/resolve/main/gifs/emberwick-{lang}.gif)
+
 Quantized GGUF files for {name}, the {m['language']} decision model. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
 
 If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
@@ -454,7 +514,7 @@ Then send the Jev request body to `http://127.0.0.1:8000/v1/systemone`. The answ
 ## Links
 
 - Full-precision weights: [mertkayacs/{repo}](https://huggingface.co/mertkayacs/{repo})
-- How it compares with Kev-4B and Laya: [model card](https://huggingface.co/mertkayacs/{repo}#compared-with-kev-4b-and-laya)
+- How it compares with Jev 1.13, Kev-4B and Laya: [charts on the model card](https://huggingface.co/mertkayacs/{repo}#results)
 - Try it online: [Space]({SPACE})
 - Code and training: [{REPO}]({REPO})
 """

@@ -20,15 +20,11 @@ Your code acts on the numbers. A 0.97 can go straight through; a 0.55 can go to 
 
 ## What JevAlt adds
 
-| Jev 1.13 limitation (from TypeSafe's docs) | JevAlt |
-|---|---|
-| No thinking step | `reasoning: "auto"` thinks only when the first answer is unsure |
-| Forced to pick even when the state has no answer | `abstain: true` adds an `unknown` option |
-| Confidence is one number | `coverage: 0.9` returns a conformal set with a coverage guarantee |
-| English first, other languages weaker | Separate Turkish and German models trained on native data |
-| Hosted API, closed weights | Apache-2.0 weights, runs offline, same answer for the same request (0 changes in 100 repeated decisions) |
+![What Jev 1.13 lacks and JevAlt has: thinking when unsure, an unknown answer, coverage sets, native Turkish and German, open weights, repeatable answers](assets/charts/jev.png)
 
-The measured numbers behind each row are on the model cards and in the [JevOss](https://github.com/mertkayacs/jevoss) reports.
+![Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya](assets/charts/fixes.png)
+
+Turn the extras on per request with `reasoning: "auto"`, `abstain: true` and `coverage: 0.9`. The Jev 1.13 rows come from [TypeSafe's notes](https://docs.typesafe.ai/model-jaggedness/jev-1.13) and an [independent audit](https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md). The measured numbers behind each row are on the model cards and in the [JevOss](https://github.com/mertkayacs/jevoss) reports.
 
 ## Start
 

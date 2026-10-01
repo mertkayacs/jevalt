@@ -1,16 +1,16 @@
 # JevAlt
 
-![JevAlt: open decision models with honest odds, in English, Turkish and German](docs/assets/card.png)
+![Emberwick: every villager asks Deem-4B what to do next](https://raw.githubusercontent.com/mertkayacs/jevalt/media/emberwick-en.gif)
+
+*Emberwick, a village game where every villager asks Deem-4B what to do next. Nothing is scripted; the card at the bottom shows the choice and how sure the model was.* Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-tr.gif) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-de.gif).
+
+![JevAlt: open decision models with honest odds, in English, Turkish and German](https://raw.githubusercontent.com/mertkayacs/jevalt/media/jevalt-card.png)
 
 Open decision models with the Jev API. Calibrated Choice, Score and Noul answers, reasoning when unsure, native Turkish and German, runs offline in about 3 GB of RAM.
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-mertkayacs-yellow)](https://huggingface.co/mertkayacs)
 [![Docs](https://img.shields.io/badge/docs-mertkayacs.github.io/jevalt-green)](https://mertkayacs.github.io/jevalt/)
-
-![Emberwick: every villager asks Deem-4B what to do next](docs/assets/emberwick-en.gif)
-
-*Emberwick, a village game where every villager asks Deem-4B what to do next. Nothing is scripted; the card at the bottom shows the choice and how sure the model was.* Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-tr.gif) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-de.gif).
 
 If this is useful to you, a star on GitHub helps other people find it.
 
@@ -71,77 +71,26 @@ Request extensions (`reasoning`, `abstain`, `coverage`) and the full API are in 
 
 ## Results
 
-Each model and the start checkpoint (Intern-Decision-4B) ran through the same client, each with its own temperatures fitted on the calibration splits. The held-out test splits come from the same pipeline as the training rows; TurkishMMLU, GermEval, 10kGNAD and JevBench-hard were never trained on; typed-decisions scores use its test split, and its train split was in the training mix.
+![Accuracy on English, Turkish and German decisions and on typed-decisions: JevAlt, Intern-Decision-4B, Kev-4B and Laya](docs/assets/charts/langs.png)
 
-| Model | Suite | Decisions | Intern-Decision-4B acc / Brier / ECE | JevAlt acc / Brier / ECE |
-|---|---|---|---|---|
-| Deem-4B | held-out English | 3,758 | 0.902 / 0.166 / 0.080 | 0.947 / 0.091 / 0.054 |
-| Deem-4B | typed-decisions | 2,000 | 0.804 / 0.292 / 0.103 | 0.810 / 0.305 / 0.150 |
-| Deem-4B | JevBench-hard | 111 | 0.712 / 0.363 / 0.086 | 0.703 / 0.378 / 0.108 |
-| Karar-4B | held-out Turkish | 3,185 | 0.916 / 0.142 / 0.073 | 0.967 / 0.058 / 0.051 |
-| Karar-4B | TurkishMMLU | 400 | 0.562 / 0.540 / 0.098 | 0.585 / 0.524 / 0.076 |
-| Wähler-4B | held-out German | 1,491 | 0.805 / 0.275 / 0.061 | 0.920 / 0.119 / 0.049 |
-| Wähler-4B | GermEval 2017 | 400 | 0.615 / 0.524 / 0.149 | 0.642 / 0.519 / 0.169 |
-| Wähler-4B | 10kGNAD | 400 | 0.578 / 0.573 / 0.128 | 0.625 / 0.568 / 0.137 |
+![Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya](docs/assets/charts/fixes.png)
 
-A paired bootstrap (2,000 resamples) puts every held-out gain well above zero: +4.4, +5.1 and +11.5 accuracy points in each model's own language. Off the training distribution the picture is flatter. Wähler-4B gains 4.75 points on 10kGNAD and Karar-4B 4.0 on GermEval, both significant; TurkishMMLU, typed-decisions and JevBench-hard show no significant accuracy change, and Brier gets slightly worse on typed-decisions and JevBench-hard.
+![What Jev 1.13 lacks and JevAlt has: thinking when unsure, an unknown answer, coverage sets, native Turkish and German, open weights, repeatable answers](docs/assets/charts/jev.png)
 
-Robustness probes on 100 typed-decisions items, same client for every model:
+Same items and client for every model, each as shipped: [Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) r10 and [Laya](https://huggingface.co/convaiinnovations/laya) 0.3.22 ran on their own servers with their own calibration. Jev 1.13 rows come from [TypeSafe's notes](https://docs.typesafe.ai/model-jaggedness/jev-1.13) and an [independent audit](https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md). The held-out tests come from JevAlt's own data pipeline, so they favour JevAlt.
 
-| Probe | Intern-Decision-4B | Deem-4B | Karar-4B | Wähler-4B |
-|---|---|---|---|---|
-| Injected instructions that flip the answer | 41.5% | 14.0% | 19.0% | 17.5% |
-| Answers that change when options are reordered | 8.8% | 6.5% | 7.3% | 9.5% |
-| Accuracy lost under 600 words of padding | 15.0 pts | 17.4 pts | 17.4 pts | 12.2 pts |
-| Noul vs two-option Choice, mean gap | 0.032 | 0.032 | 0.050 | 0.029 |
-| Largest change over 5 identical runs | 0 | 0 | 0 | 0 |
+Where the others lead: Kev-4B on 10kGNAD, and on GermEval 2017 against Wähler-4B; Kev-4B and Laya lose less accuracy under 600 words of padding; the start checkpoint stays ahead on JevBench-hard; Laya is far smaller and faster. Every number with Brier and ECE, and every decision: [results](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results), [comparison](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison).
+
+<details>
+<summary>Significance and caveats</summary>
+
+A paired bootstrap (2,000 resamples) puts every held-out gain well above zero: +4.4, +5.1 and +11.5 accuracy points in each model's own language. Off the training distribution the picture is flatter. Wähler-4B gains 4.75 points on 10kGNAD and Karar-4B 4.0 on GermEval, both significant; TurkishMMLU, typed-decisions and JevBench-hard show no significant accuracy change, and Brier gets slightly worse on typed-decisions and JevBench-hard. JevAlt trained on the typed-decisions train split; its scores use the test split.
+
+Kev-4B and Laya received every row in the shapes the TypeSafe docs use (Noul criteria keyed `true`/`false`, Score levels as a list). Rows that need the `unknown` option are left out of every model's score, because Kev-4B and Laya do not offer it. Probes use 100 typed-decisions items.
 
 Long noisy states are still a weak spot. Reasoning helps less than we hoped: with the fitted thresholds, `reasoning: "auto"` moved Deem-4B from 0.761 to 0.769 on the English date, number and policy test rows, left Karar-4B unchanged and made Wähler-4B's Brier worse ([details](https://mertkayacs.github.io/jevalt/reasoning/)).
 
-Every number above comes from the result files in [jevalt-bench](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results).
-
-## Compared with Kev-4B and Laya
-
-[Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) and [Laya](https://huggingface.co/convaiinnovations/laya) are the other open models that answer Jev requests. Every model ran through the same client on the same items; Kev-4B (r10) and Laya (0.3.22) ran on their own servers with their shipped calibration. Accuracy, higher is better, best in bold:
-
-| | Deem-4B | Karar-4B | Wähler-4B | Intern-Decision-4B | Kev-4B | Laya |
-|---|---|---|---|---|---|---|
-| English held-out test (3,754) | 94.7% | **94.9%** | 94.5% | 90.3% | 84.7% | 55.3% |
-| Turkish held-out test (3,175) | 96.5% | **96.8%** | 95.9% | 91.7% | 87.1% | 32.7% |
-| German held-out test (1,483) | **92.7%** | **92.7%** | 92.0% | 80.5% | 81.1% | 47.2% |
-| typed-decisions (2,000) | **81.0%** | 80.4% | 80.2% | 80.4% | 67.0% | 36.1% |
-| JevBench-hard (111) | 70.3% | 66.7% | 65.8% | **71.2%** | 54.1% | 34.2% |
-| TurkishMMLU (400) | 55.5% | **58.5%** | 54.8% | 56.2% | 51.2% | 18.8% |
-| GermEval 2017 (400) | 62.0% | **65.5%** | 64.2% | 61.5% | 65.2% | 45.0% |
-| 10kGNAD (400) | 59.5% | 60.5% | 62.5% | 57.8% | **65.2%** | 59.5% |
-
-Lower is better (100 typed-decisions items):
-
-| | Deem-4B | Karar-4B | Wähler-4B | Intern-Decision-4B | Kev-4B | Laya |
-|---|---|---|---|---|---|---|
-| An instruction hidden in the state flips the answer | **14.0%** | 19.0% | 17.5% | 41.5% | 36.0% | 42.0% |
-| Reordering the options flips the answer | **6.5%** | 7.2% | 9.5% | 8.8% | 13.5% | 23.8% |
-| Accuracy lost to 600 words of padding | 17.4 pts | 17.4 pts | 12.2 pts | 15.0 pts | **5.4 pts** | 10.4 pts |
-| Yes/no and two-option choice disagree (mean gap) | 0.032 | 0.050 | **0.029** | 0.032 | 0.033 | 0.106 |
-
-How to read it: the held-out tests come from the same pipeline as JevAlt's training rows, so they favour JevAlt. JevAlt also trained on the typed-decisions train split; the scores use its test split. Kev-4B and Laya received every row in the shapes the TypeSafe docs use (Noul criteria keyed `true`/`false`, Score levels as a list); the content is the same as JevAlt's rows. Rows that need the `unknown` option are left out of every column, because Kev-4B and Laya do not offer it.
-
-### Problems these models share
-
-Each held-out row tests one weakness. The JevAlt column uses each language's own model. The last column marks rows where JevAlt beats all three others with a paired bootstrap interval above zero.
-
-| Weakness | JevAlt | Intern-Decision-4B | Kev-4B | Laya | Clear win |
-|---|---|---|---|---|---|
-| Instruction hidden in the state (203) | **90.1%** | 80.8% | 81.3% | 41.9% | yes |
-| Long irrelevant text around the state (285) | **95.4%** | 91.2% | 87.4% | 41.4% | yes |
-| Criteria that invert the question's wording (85) | **60.0%** | 56.5% | 52.9% | 41.2% | |
-| Long policies with exceptions (150) | **80.0%** | 55.3% | 59.3% | 38.0% | yes |
-| Dates and deadlines (80) | **71.2%** | 61.3% | 67.5% | 45.0% | |
-| Numbers and sums (44) | **68.2%** | **68.2%** | **68.2%** | 20.5% | |
-| Negated questions (30) | **96.7%** | 80.0% | 76.7% | 50.0% | yes |
-| Yes/no asked as a two-option choice (47) | **97.9%** | **97.9%** | **97.9%** | 68.1% | |
-
-Every result file and every per-question decision: [results/comparison](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison).
+</details>
 
 ## Reproduce
 

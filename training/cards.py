@@ -142,7 +142,7 @@ OTHER_MODELS = ["intern-decision-4b", "kev-4b", "laya"]
 OTHER_NAMES = {"intern-decision-4b": "Intern-Decision-4B", "kev-4b": "Kev-4B", "laya": "Laya"}
 COMPARE_FILES = "https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison"
 VIDEOS = "https://huggingface.co/datasets/mertkayacs/emberwick-videos"
-GIF_CAPTION = "Emberwick: every villager asks Deem-4B what to do next. Nothing is scripted."
+GIF_CAPTION = "Emberwick: every villager asks Deem-4B what to do next."
 FILM_CAPTION = "The one-minute film, sound on: three mistakes small decision models make and how JevAlt fixes each one."
 # Turkish and German pages offer the clip and the film in their own language next to the English ones.
 NATIVE = {

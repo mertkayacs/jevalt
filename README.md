@@ -7,11 +7,11 @@ JevAlt is three open 4B decision models: **Deem-4B** for English, **Karar-4B** f
 [![Docs](https://img.shields.io/badge/docs-mertkayacs.github.io%2Fjevalt-3a7d44)](https://mertkayacs.github.io/jevalt/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
-**[Try it](#try-it) · [Models](#models) · [Run it](#run-it-on-your-machine) · [Results](#results) · [Limits](#limits) · [Related](#related) · [Citation](#citation)**
+**[Try it](#try-it) · [Models](#models) · [Run it](#run-it-on-your-machine) · [Results](#results) · [Limits](#limits) · [Related](#related) · [Citation](#license-and-citation)**
 
 ![Emberwick: every villager asks Deem-4B what to do next](https://raw.githubusercontent.com/mertkayacs/jevalt/media/emberwick-en.gif)
 
-*In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, every villager asks Deem-4B what to do next. Nothing is scripted.*
+*In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, every villager asks Deem-4B what to do next.*
 
 <a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-en-1080p.mp4"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/film-poster-en.jpg" width="560" alt="Watch the one-minute film: three mistakes small decision models make and how JevAlt fixes each one"></a>
 
@@ -55,22 +55,10 @@ jevalt serve    # downloads Deem-4B, then listens on http://127.0.0.1:8000
 Send it the support ticket from the table:
 
 ```bash
-curl -s http://127.0.0.1:8000/v1/systemone \
-  -H "Content-Type: application/json" \
-  -d '{
-    "state": "Hi, I was charged twice for my March subscription. Please refund the duplicate today, otherwise I will cancel.",
-    "questions": {
-      "team": {
-        "type": "choice",
-        "instructions": "Which team should handle this ticket?",
-        "criteria": {
-          "billing": "payments, invoices, refunds",
-          "technical": "bugs, errors, outages",
-          "sales": "prices, upgrades, new contracts"
-        }
-      }
-    }
-  }'
+curl -s http://127.0.0.1:8000/v1/systemone -H "Content-Type: application/json" -d '{
+  "state": "Hi, I was charged twice for March. Please refund the duplicate today.",
+  "questions": {"team": {"type": "choice", "instructions": "Which team should handle this ticket?",
+    "criteria": {"billing": "payments, refunds", "technical": "bugs, outages", "sales": "prices, contracts"}}}}'
 ```
 
 For Turkish or German, serve that model instead: `jevalt serve --model mertkayacs/Karar-4B-GGUF --file Karar-4B-Q4_K_M.gguf`. Thinking before answering (`reasoning`), the "unknown" answer (`abstain`) and answer sets (`coverage`) are in the [docs](https://mertkayacs.github.io/jevalt/).
@@ -125,11 +113,9 @@ Long noisy states are still a weak spot. Reasoning helps less than we hoped: wit
 - [Emberwick](https://emberwick.mertkayacs.com): the village game, with what the villagers got done.
 - [jevalt.mertkayacs.com](https://jevalt.mertkayacs.com): the project site in English, Turkish and German.
 
-## License
+## License and citation
 
 Apache-2.0, for the code and the weights.
-
-## Citation
 
 <details>
 <summary>BibTeX</summary>

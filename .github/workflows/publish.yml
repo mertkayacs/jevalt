@@ -1,0 +1,17 @@
+name: publish
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.13"
+      - uses: astral-sh/setup-uv@v5.2.2
+      - run: uv build
+      - uses: pypa/gh-action-pypi-publish@v1.12.3

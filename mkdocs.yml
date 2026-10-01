@@ -1,0 +1,37 @@
+site_name: JevAlt
+site_description: Open decision models with the Jev API. Calibrated Choice, Score and Noul answers, optional reasoning, English, Turkish and German, 4 GB RAM.
+site_url: https://mertkayacs.github.io/jevalt/
+repo_url: https://github.com/mertkayacs/jevalt
+repo_name: mertkayacs/jevalt
+edit_uri: edit/main/docs/
+copyright: Apache-2.0. Built by Mert Kaya.
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle: {icon: material/weather-night, name: Dark theme}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle: {icon: material/weather-sunny, name: Light theme}
+  font: {text: Inter, code: JetBrains Mono}
+  features: [navigation.sections, navigation.top, content.code.copy, search.suggest]
+extra_css: [assets/brand.css]
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed: {alternate_style: true}
+  - toc: {permalink: true}
+nav:
+  - Overview: index.md
+  - API: api.md
+  - Reasoning: reasoning.md
+  - Run locally: local.md
+  - How it was built: how-it-was-built.md

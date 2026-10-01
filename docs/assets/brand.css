@@ -1,0 +1,14 @@
+:root, [data-md-color-scheme="default"] {
+  --md-primary-fg-color: #1E2A38;
+  --md-primary-bg-color: #FDF8F1;
+  --md-accent-fg-color: #5B2A36;
+  --md-default-bg-color: #FDF8F1;
+  --md-typeset-a-color: #5B2A36;
+}
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #141C26;
+  --md-accent-fg-color: #C4A772;
+  --md-default-bg-color: #141C26;
+  --md-typeset-a-color: #C4A772;
+}
+.md-typeset h1, .md-typeset h2 { font-family: Georgia, "Times New Roman", serif; }

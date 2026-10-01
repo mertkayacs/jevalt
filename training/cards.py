@@ -142,18 +142,40 @@ OTHER_MODELS = ["intern-decision-4b", "kev-4b", "laya"]
 OTHER_NAMES = {"intern-decision-4b": "Intern-Decision-4B", "kev-4b": "Kev-4B", "laya": "Laya"}
 COMPARE_FILES = "https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison"
 VIDEOS = "https://huggingface.co/datasets/mertkayacs/emberwick-videos"
-GIF_CAPTION = {
-    "en": "Emberwick: every villager asks Deem-4B what to do next. Nothing is scripted.",
-    "tr": "Emberwick: her köylü bir sonraki adımını Karar-4B'ye soruyor. Hiçbir sahne önceden yazılmadı.",
-    "de": "Emberwick: Jeder Dorfbewohner fragt Wähler-4B, was als Nächstes zu tun ist. Nichts ist vorab festgelegt.",
+GIF_CAPTION = "Emberwick: every villager asks Deem-4B what to do next. Nothing is scripted."
+FILM_CAPTION = "The one-minute film, sound on: three mistakes small decision models make and how JevAlt fixes each one."
+# Turkish and German pages offer the clip and the film in their own language next to the English ones.
+NATIVE = {
+    "tr": ("Türkçe sürüm", "Emberwick Türkçe: her köylü bir sonraki adımını Karar-4B'ye soruyor.", "Bir dakikalık film, sesi açın.",
+           "GIF (4K)", "hafif GIF"),
+    "de": ("Deutsche Version", "Emberwick auf Deutsch: Jeder Dorfbewohner fragt Wähler-4B, was als Nächstes zu tun ist.",
+           "Der einminütige Film, mit Ton.", "GIF (4K)", "leichtes GIF"),
 }
 
 
+def _video(lang: str) -> str:
+    film = f"{VIDEOS}/resolve/main/film/jevalt-film-{lang}"
+    return f'<video controls playsinline preload="none" poster="{film}.jpg" src="{film}-1080p.mp4"></video>'
+
+
+def native_block(lang: str) -> str:
+    """The Turkish or German clip and film behind a toggle, so the page opens in English."""
+    if lang not in NATIVE:
+        return ""
+    label, caption, film, gif4k, gif960 = NATIVE[lang]
+    g = f"{VIDEOS}/resolve/main/gifs"
+    return (f"<details>\n<summary><b>{label}</b></summary>\n\n{_video(lang)}\n\n*{film}* {caption} "
+            f"[{gif4k}]({g}/emberwick-{lang}.gif) · [{gif960}]({g}/960/emberwick-{lang}.gif)\n\n</details>\n\n")
+
+
 def media_block(lang: str) -> str:
-    """The village clip in the model's language on top (4K GIF), then the share card."""
+    """The English village clip on top (4K GIF), the English film, the clip and film in the model's own
+    language behind a toggle, then the share card."""
     repo = MODELS[lang]["repo"]
-    return (f"![{GIF_CAPTION[lang]}]({VIDEOS}/resolve/main/gifs/emberwick-{lang}.gif)\n\n"
-            f"*{GIF_CAPTION[lang]}* [More clips]({VIDEOS}) · [One-minute film with sound]({VIDEOS}/resolve/main/film/jevalt-film-{lang}-1080p.mp4).\n\n"
+    return (f"![{GIF_CAPTION}]({VIDEOS}/resolve/main/gifs/emberwick-en.gif)\n\n"
+            f"*{GIF_CAPTION}* [More clips]({VIDEOS})\n\n"
+            f"{_video('en')}\n\n*{FILM_CAPTION}*\n\n"
+            f"{native_block(lang)}"
             f"![{MODELS[lang]['name']}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/card.png)\n\n")
 
 
@@ -490,9 +512,13 @@ def gguf_card(lang: str, export_report: dict | None, memory_report: dict | None)
 
     return head + f"""# {name} GGUF
 
-![{GIF_CAPTION[lang]}]({VIDEOS}/resolve/main/gifs/emberwick-{lang}.gif)
+![{GIF_CAPTION}]({VIDEOS}/resolve/main/gifs/emberwick-en.gif)
 
-Quantized GGUF files for {name}, the {m['language']} decision model. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
+{_video('en')}
+
+*{FILM_CAPTION}*
+
+{native_block(lang)}Quantized GGUF files for {name}, the {m['language']} decision model. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
 
 If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
 

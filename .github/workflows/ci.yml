@@ -15,5 +15,5 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: astral-sh/setup-uv@v5.2.2
-      - run: uv pip install -e ".[dev]" --system
+      - run: uv pip install -e ".[dev,serve,data]" numpy --system
       - run: pytest -q

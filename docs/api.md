@@ -38,7 +38,7 @@ Question types:
 
 ## When instructions and criteria disagree
 
-The criteria win. If a Noul asks "Was it on time?" but its criteria say `yes` means "arrived after the deadline", JevAlt answers by the criteria. Jev 1.13 gets confused in this case (TypeSafe lists it as a known weakness); JevAlt is trained on such pairs so the rule holds.
+Write the criteria so they agree with the instructions. If a Noul asks "Was it on time?" but its criteria say `yes` means "arrived after the deadline", the intended answer follows the criteria, and that is where these models still slip. TypeSafe lists the same case as a known weakness of Jev 1.13. JevAlt was trained on such pairs, yet on the held-out inverted-criteria rows the released models answer by the criteria only 43 to 71% of the time, close to the start checkpoint's 40 to 71% (14 to 41 decisions per language, `results/` in [jevalt-bench](https://huggingface.co/datasets/mertkayacs/jevalt-bench)).
 
 ## Extensions
 

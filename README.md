@@ -1,10 +1,16 @@
 # JevAlt
 
+![JevAlt: open decision models with honest odds, in English, Turkish and German](docs/assets/card.png)
+
 Open decision models with the Jev API. Calibrated Choice, Score and Noul answers, reasoning when unsure, native Turkish and German, runs offline in about 3 GB of RAM.
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-mertkayacs-yellow)](https://huggingface.co/mertkayacs)
 [![Docs](https://img.shields.io/badge/docs-mertkayacs.github.io/jevalt-green)](https://mertkayacs.github.io/jevalt/)
+
+![Emberwick: every villager asks Deem-4B what to do next](docs/assets/emberwick-en.gif)
+
+*Emberwick, a village game where every villager asks Deem-4B what to do next. Nothing is scripted; the card at the bottom shows the choice and how sure the model was.* Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-tr.gif) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-de.gif).
 
 If this is useful to you, a star on GitHub helps other people find it.
 

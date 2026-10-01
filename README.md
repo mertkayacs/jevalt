@@ -20,7 +20,7 @@ JevAlt is a family of open 4B decision models that speak TypeSafe's `POST /v1/sy
 | Karar-4B | Turkish | [mertkayacs/Karar-4B](https://huggingface.co/mertkayacs/Karar-4B) | [mertkayacs/Karar-4B-GGUF](https://huggingface.co/mertkayacs/Karar-4B-GGUF) |
 | Wähler-4B | German | [mertkayacs/Wahler-4B](https://huggingface.co/mertkayacs/Wahler-4B) | [mertkayacs/Wahler-4B-GGUF](https://huggingface.co/mertkayacs/Wahler-4B-GGUF) |
 
-Each model has a Q4_K_M GGUF file (for example `Deem-4B-Q4_K_M.gguf`) that the `jevalt` server runs on a CPU. The server reads the model's next-token probabilities at each decision, so it is the piece that speaks the Jev API; a plain chat server can load the file but returns text.
+The same Q4_K_M files are on [Kaggle](https://www.kaggle.com/models/mertilovski/jevalt) with a [CPU quickstart notebook](https://www.kaggle.com/code/mertilovski/jevalt-quickstart-calibrated-decisions-on-cpu), and all three models answer in the [Space](https://huggingface.co/spaces/mertkayacs/JevAlt). Each model has a Q4_K_M GGUF file (for example `Deem-4B-Q4_K_M.gguf`) that the `jevalt` server runs on a CPU. The server reads the model's next-token probabilities at each decision, so it is the piece that speaks the Jev API; a plain chat server can load the file but returns text.
 
 ## Quickstart
 

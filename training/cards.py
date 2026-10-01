@@ -34,7 +34,7 @@ MODELS = {
             "Karar-4B, Türkçe yazılmış kararlar üzerinde eğitilmiş açık bir modeldir. Bir durum ve "
             "Choice, Score ya da Noul sorusu gönderirsiniz; her seçenek için kalibre edilmiş olasılık "
             "alırsınız. İsterseniz model önce kısa bir Türkçe gerekçe yazar, sonra karar verir. "
-            "Q4_K_M sürümü 4 GB RAM ile kendi makinenizde çalışır, veriler dışarı çıkmaz.\n"
+            "Q4_K_M sürümü yaklaşık 3 GB RAM ile kendi bilgisayarınızda çalışır, veriler dışarı çıkmaz.\n"
         ),
     },
     "de": {
@@ -46,7 +46,7 @@ MODELS = {
             "Wähler-4B ist ein offenes Entscheidungsmodell, das auf deutschsprachigen Entscheidungen "
             "trainiert wurde. Sie senden einen Zustand und Choice-, Score- oder Noul-Fragen und erhalten "
             "für jede Option eine kalibrierte Wahrscheinlichkeit. Auf Wunsch schreibt das Modell zuerst "
-            "eine kurze Begründung auf Deutsch und entscheidet dann. Die Q4_K_M-Version läuft mit 4 GB RAM "
+            "eine kurze Begründung auf Deutsch und entscheidet dann. Die Q4_K_M-Version läuft mit etwa 3 GB RAM "
             "auf dem eigenen Rechner, die Daten bleiben lokal.\n"
         ),
     },
@@ -118,6 +118,120 @@ def _probe_table(probe_results: dict | None, probe_baseline: dict | None, label_
     return "\n".join(rows)
 
 
+SUITE_NAMES = {
+    "test-en": "English held-out test",
+    "test-tr": "Turkish held-out test",
+    "test-de": "German held-out test",
+    "typed-decisions": "typed-decisions",
+    "jevbench-hard": "JevBench-hard",
+    "turkish-mmlu": "TurkishMMLU",
+    "germeval2017": "GermEval 2017",
+    "gnad10": "10kGNAD",
+}
+COMPARE_ROWS = {
+    "en": ["test-en", "typed-decisions", "jevbench-hard", "test-tr", "test-de"],
+    "tr": ["test-tr", "turkish-mmlu", "test-en", "typed-decisions", "jevbench-hard"],
+    "de": ["test-de", "germeval2017", "gnad10", "test-en", "typed-decisions", "jevbench-hard"],
+}
+COMPARE_PROBES = [  # probe id, row label, format, short name for sentences; lower is better for all three
+    ("injection", "An instruction hidden in the state flips the answer", "pct", "hidden instructions"),
+    ("permutation", "Reordering the options flips the answer", "pct", "option order"),
+    ("distractors-600w", "Accuracy lost to 600 words of padding", "pts", "long padding"),
+]
+OTHER_MODELS = ["intern-decision-4b", "kev-4b", "laya"]
+OTHER_NAMES = {"intern-decision-4b": "Intern-Decision-4B", "kev-4b": "Kev-4B", "laya": "Laya"}
+COMPARE_FILES = "https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison"
+
+
+def _bold_best(values: list[float | None], cells: list[str], higher: bool) -> list[str]:
+    """Bold every cell that ties for the best value in its row."""
+    known = [v for v in values if v is not None]
+    if not known:
+        return cells
+    best = max(known) if higher else min(known)
+    return [f"**{c}**" if v is not None and abs(v - best) < 1e-9 else c for v, c in zip(values, cells)]
+
+
+def comparison_section(lang: str, comp: dict | None) -> str:
+    """Kev-4B and Laya next to this model and the start checkpoint, from results/comparison.json."""
+    if not comp:
+        return ""
+    key = {"en": "deem-4b", "tr": "karar-4b", "de": "wahler-4b"}[lang]
+    name = MODELS[lang]["name"]
+    cols = [key] + OTHER_MODELS
+    names = [name] + [OTHER_NAMES[m] for m in OTHER_MODELS]
+    lines = ["| Accuracy, higher is better | " + " | ".join(names) + " |", "|---" * (len(cols) + 1) + "|"]
+    rows = 0
+    wins = {"kev-4b": 0, "laya": 0}
+    behind = {"kev-4b": [], "laya": []}
+    for suite in COMPARE_ROWS[lang]:
+        row = comp["suites"].get(suite, {})
+        if any(m not in row for m in cols):
+            continue
+        vals = [row[m]["accuracy"] for m in cols]
+        cells = _bold_best(vals, [_pct(v) for v in vals], higher=True)
+        lines.append(f"| {SUITE_NAMES[suite]} ({row[key]['n']:,} decisions) | " + " | ".join(cells) + " |")
+        rows += 1
+        for other in wins:
+            if vals[0] > row[other]["accuracy"]:
+                wins[other] += 1
+            elif vals[0] < row[other]["accuracy"]:
+                behind[other].append(SUITE_NAMES[suite])
+    lines.append("| **Lower is better** | | | | |")
+    for probe, label, kind, short in COMPARE_PROBES:
+        row = comp["probes"].get(probe, {})
+        if any(m not in row for m in cols):
+            continue
+        vals = [row[m] for m in cols]
+        cells = _bold_best(vals, [_pct(v) if kind == "pct" else _pts(v) for v in vals], higher=False)
+        lines.append(f"| {label} | " + " | ".join(cells) + " |")
+        rows += 1
+        for other in wins:
+            if vals[0] < row[other]:
+                wins[other] += 1
+            elif vals[0] > row[other]:
+                behind[other].append(short)
+
+    weak = ["| Weakness, held-out rows | JevAlt | Intern-Decision-4B | Kev-4B | Laya |", "|---|---|---|---|---|"]
+    for row in comp["weaknesses"].values():
+        if any(m not in row for m in ["jevalt"] + OTHER_MODELS):
+            continue
+        vals = [row[m]["accuracy"] for m in ["jevalt"] + OTHER_MODELS]
+        cells = _bold_best(vals, [_pct(v) for v in vals], higher=True)
+        weak.append(f"| {row['label']} ({row['jevalt']['n']} decisions) | " + " | ".join(cells) + " |")
+
+    def where(items):
+        return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+    both = [x for x in behind["kev-4b"] if x in behind["laya"]]
+    only_kev = [x for x in behind["kev-4b"] if x not in both]
+    only_laya = [x for x in behind["laya"] if x not in both]
+    others = []
+    if both:
+        others.append(f"Kev-4B and Laya both do better than {name} on {where(both)}")
+    if only_kev:
+        others.append(f"Kev-4B does better on {where(only_kev)}")
+    if only_laya:
+        others.append(f"Laya does better on {where(only_laya)}")
+    others.append("Laya is far smaller and faster (322M to 421M parameters, about 33 ms per request on a T4 GPU, by its card)")
+
+    return f"""## Compared with Kev-4B and Laya
+
+[Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) and [Laya](https://huggingface.co/convaiinnovations/laya) are open models that answer the same Jev requests. All four models ran through one client on the same items; Kev-4B and Laya ran on their own servers with their shipped calibration. {name} beats Kev-4B on {wins['kev-4b']} of these {rows} rows and Laya on {wins['laya']}. Bold marks the best score in each row.
+
+{chr(10).join(lines)}
+
+The held-out tests come from the same pipeline as JevAlt's training rows, so they favour JevAlt; JevAlt also trained on the typed-decisions train split (scores use its test split). Kev-4B and Laya received every row in the shapes the TypeSafe docs use (Noul criteria keyed `true`/`false`, Score levels as a list). Rows that need the `unknown` option are left out of every column, because Kev-4B and Laya do not offer it. Probes use 100 typed-decisions items.
+
+**Problems these models share.** Each held-out row below tests one weakness. The JevAlt column uses each language's own model (Deem-4B on English rows, Karar-4B on Turkish, Wähler-4B on German).
+
+{chr(10).join(weak)}
+
+Where the others do better: {'; '.join(others)}. Result files and every decision: [results/comparison]({COMPARE_FILES}).
+
+"""
+
+
 def _training_section(training: dict | None) -> str:
     if not training:
         return ""
@@ -161,6 +275,7 @@ def card(
     probe_results: dict | None = None,
     probe_baseline: dict | None = None,
     notes: str = "",
+    comparison: dict | None = None,
 ) -> str:
     m = MODELS[lang]
     name = m["name"]
@@ -182,11 +297,14 @@ def card(
 
     probe_tbl = _probe_table(probe_results, probe_baseline, name, "Intern-Decision-4B")
     probe_sec = f"## Probes\n\nOn 100 typed-decisions items, same client for both models.\n\n{probe_tbl}\n\n" if probe_tbl else ""
+    if comparison:  # the comparison carries the same probes plus Kev-4B and Laya
+        probe_sec = comparison_section(lang, comparison)
+    article = "An" if m["language"][0] in "AEIOU" else "A"
     training_sec = _training_section(training)
 
     return head + f"""# {name}
 
-A {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs in 4 GB of RAM on your own machine.
+{article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
 
 If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
 
@@ -336,6 +454,7 @@ Then send the Jev request body to `http://127.0.0.1:8000/v1/systemone`. The answ
 ## Links
 
 - Full-precision weights: [mertkayacs/{repo}](https://huggingface.co/mertkayacs/{repo})
+- How it compares with Kev-4B and Laya: [model card](https://huggingface.co/mertkayacs/{repo}#compared-with-kev-4b-and-laya)
 - Try it online: [Space]({SPACE})
 - Code and training: [{REPO}]({REPO})
 """

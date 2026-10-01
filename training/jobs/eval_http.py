@@ -12,6 +12,7 @@ jevoss client, and uploads results.json to the work repo.
 """
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -35,7 +36,27 @@ p.add_argument("--limit", type=int, default=300)
 p.add_argument("--workers", type=int, default=2)
 p.add_argument("--server-env", nargs="*", default=[], help="KEY=VALUE for the server process (-e/--env is taken by hf jobs)")
 p.add_argument("--work", default="mertkayacs/jev-work")
+p.add_argument("--official-shapes", action="store_true", help="send the shapes the TypeSafe docs use (Noul criteria true/false, Score levels as a list)")
 a = p.parse_args()
+
+
+def official(item):
+    """Same content in the documented shapes: Noul criteria keyed true/false, Score levels as an ordered list
+    (gold labels move to the level index)."""
+    item = json.loads(json.dumps(item))
+    for qid, q in item["questions"].items():
+        c = q.get("criteria")
+        if q["type"] == "noul" and isinstance(c, dict):
+            names = {"yes": "true", "true": "true", "1": "true", "no": "false", "false": "false", "0": "false"}
+            q["criteria"] = {names.get(str(k).lower(), str(k)): v for k, v in c.items()}
+        elif q["type"] == "score" and isinstance(c, dict):
+            index = {str(k): str(i) for i, k in enumerate(c)}
+            q["criteria"] = list(c.values())
+            t = item["targets"][qid]
+            t["label"] = index.get(str(t["label"]), str(t["label"]))
+            if t.get("dist"):
+                t["dist"] = {index.get(str(k), str(k)): v for k, v in t["dist"].items()}
+    return item
 
 
 def log(*x):
@@ -68,8 +89,14 @@ log("server up")
 predict = http_predictor(f"http://127.0.0.1:{a.port}", model=a.model)
 results = []
 for name in a.suites:
-    kw = {"limit": a.limit} if name.startswith(("massive", "gmmlu")) else {}
-    items = suites.load(name, **kw)
+    if name.endswith(".jsonl"):  # a frozen split in the work repo, named like evaluate.py names it
+        items = suites.load(hf_hub_download(a.work, name, repo_type="dataset"))
+        name = os.path.basename(name).removesuffix(".jsonl")
+    else:
+        kw = {"limit": a.limit} if name.startswith(("massive", "gmmlu")) else {}
+        items = suites.load(name, **kw)
+    if a.official_shapes:
+        items = [official(i) for i in items]
     t = time.time()
     decisions, raw = run(items, predict, workers=a.workers, on_error="record")
     res = report.result(decisions, suite=name, model=a.tag, extra={"errors": sum(1 for r in raw if r["error"]), "seconds": round(time.time() - t, 1)})

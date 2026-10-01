@@ -402,7 +402,7 @@ def card(
 
 {article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
 
-**[Try it](#try-it) · [Run it](#run-it) · [Results](#results) · [Use and limits](#use-and-limits) · [Links](#links)**
+**[Try it](#try-it) · [Run it](#run-it) · [Results](#results) · [Use and limits](#use-and-limits) · [Code and links](#code-and-links)**
 
 {media_block(lang) if media else ''}{try_it}| | |
 |---|---|
@@ -445,7 +445,7 @@ client = TypeSafeClient(api_key="local", base_url="http://127.0.0.1:8000")
 
 </details>
 
-## Links
+## Code and links
 
 - Code, server and training: [{REPO}]({REPO})
 - Playground, probes and recipes: [{PLAYGROUND}]({PLAYGROUND})
@@ -522,7 +522,7 @@ def gguf_card(lang: str, export_report: dict | None, memory_report: dict | None)
 
 Quantized GGUF files for {name}, the {m['language']} decision model, for CPUs and small machines. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
 
-**[Files](#files) · [Use with jevalt](#use-with-jevalt) · [Links](#links)** · Examples and results: [{name} card](https://huggingface.co/mertkayacs/{repo}#try-it) · Try it: [Space]({SPACE})
+**[Files](#files) · [Use with jevalt](#use-with-jevalt) · [Code and links](#code-and-links)** · Examples and results: [{name} card](https://huggingface.co/mertkayacs/{repo}#try-it) · Try it: [Space]({SPACE})
 
 ![{GIF_CAPTION}]({VIDEOS}/resolve/main/gifs/emberwick-en.gif)
 
@@ -545,7 +545,7 @@ jevalt serve --model mertkayacs/{repo}-GGUF --file {repo}-Q4_K_M.gguf
 
 Then send the Jev request body to `http://127.0.0.1:8000/v1/systemone`. The answers come from the model's next-token probabilities at each decision marker, which the jevalt server reads through llama-cpp-python. llama.cpp's own `llama-server` and LM Studio can load the file, but their chat endpoints return generated text, so they give you neither the Jev API nor calibrated probabilities.
 
-## Links
+## Code and links
 
 - Full-precision weights: [mertkayacs/{repo}](https://huggingface.co/mertkayacs/{repo})
 - How it compares with Jev 1.13, Kev-4B and Laya: [charts on the model card](https://huggingface.co/mertkayacs/{repo}#results)

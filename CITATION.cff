@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use JevAlt, please cite it as below."
+type: software
+title: "JevAlt: Open Decision Models with the Jev API"
+abstract: "Three open 4B decision models (Deem-4B for English, Karar-4B for Turkish, Wähler-4B for German) that answer typed questions with a calibrated probability for every option. They speak the Jev API and run on a CPU in about 3 GB of RAM."
+authors:
+  - family-names: Kaya
+    given-names: Mert
+version: 0.1.0
+date-released: 2026-10-01
+license: Apache-2.0
+repository-code: "https://github.com/mertkayacs/jevalt"
+url: "https://jevalt.mertkayacs.com"
+keywords:
+  - decision model
+  - calibration
+  - conformal prediction
+  - text classification
+  - Turkish
+  - German
+  - GGUF

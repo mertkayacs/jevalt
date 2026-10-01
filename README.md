@@ -4,6 +4,8 @@
 
 *Emberwick, a village game where every villager asks Deem-4B what to do next. Nothing is scripted; the card at the bottom shows the choice and how sure the model was.* Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-tr.gif) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/gifs/emberwick-de.gif).
 
+Watch the one-minute film with sound: [English](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-en-1080p.mp4), [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-tr-1080p.mp4), [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-de-1080p.mp4).
+
 ![JevAlt: open decision models with honest odds, in English, Turkish and German](https://raw.githubusercontent.com/mertkayacs/jevalt/media/jevalt-card.png)
 
 Open decision models with the Jev API. Calibrated Choice, Score and Noul answers, reasoning when unsure, native Turkish and German, runs offline in about 3 GB of RAM.

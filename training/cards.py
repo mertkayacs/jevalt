@@ -153,7 +153,7 @@ def media_block(lang: str) -> str:
     """The village clip in the model's language on top (4K GIF), then the share card."""
     repo = MODELS[lang]["repo"]
     return (f"![{GIF_CAPTION[lang]}]({VIDEOS}/resolve/main/gifs/emberwick-{lang}.gif)\n\n"
-            f"*{GIF_CAPTION[lang]}* [More clips]({VIDEOS}).\n\n"
+            f"*{GIF_CAPTION[lang]}* [More clips]({VIDEOS}) · [One-minute film with sound]({VIDEOS}/resolve/main/film/jevalt-film-{lang}-1080p.mp4).\n\n"
             f"![{MODELS[lang]['name']}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/card.png)\n\n")
 
 

@@ -30,11 +30,11 @@ MODELS = {
         "repo": "Karar-4B",
         "language": "Turkish",
         "native": (
-            "## Türkçe özet\n\n"
+            "<details>\n<summary><b>Türkçe özet</b></summary>\n\n"
             "Karar-4B, Türkçe yazılmış kararlar üzerinde eğitilmiş açık bir modeldir. Bir durum ve "
             "Choice, Score ya da Noul sorusu gönderirsiniz; her seçenek için kalibre edilmiş olasılık "
             "alırsınız. İsterseniz model önce kısa bir Türkçe gerekçe yazar, sonra karar verir. "
-            "Q4_K_M sürümü yaklaşık 3 GB RAM ile kendi bilgisayarınızda çalışır, veriler dışarı çıkmaz.\n"
+            "Q4_K_M sürümü yaklaşık 3 GB RAM ile kendi bilgisayarınızda çalışır, veriler dışarı çıkmaz.\n\n</details>\n"
         ),
     },
     "de": {
@@ -42,12 +42,12 @@ MODELS = {
         "repo": "Wahler-4B",
         "language": "German",
         "native": (
-            "## Deutsche Zusammenfassung\n\n"
+            "<details>\n<summary><b>Deutsche Zusammenfassung</b></summary>\n\n"
             "Wähler-4B ist ein offenes Entscheidungsmodell, das auf deutschsprachigen Entscheidungen "
             "trainiert wurde. Sie senden einen Zustand und Choice-, Score- oder Noul-Fragen und erhalten "
             "für jede Option eine kalibrierte Wahrscheinlichkeit. Auf Wunsch schreibt das Modell zuerst "
             "eine kurze Begründung auf Deutsch und entscheidet dann. Die Q4_K_M-Version läuft mit etwa 3 GB RAM "
-            "auf dem eigenen Rechner, die Daten bleiben lokal.\n"
+            "auf dem eigenen Rechner, die Daten bleiben lokal.\n\n</details>\n"
         ),
     },
 }
@@ -170,13 +170,11 @@ def native_block(lang: str) -> str:
 
 def media_block(lang: str) -> str:
     """The English village clip on top (4K GIF), the English film, the clip and film in the model's own
-    language behind a toggle, then the share card."""
-    repo = MODELS[lang]["repo"]
+    language behind a toggle."""
     return (f"![{GIF_CAPTION}]({VIDEOS}/resolve/main/gifs/emberwick-en.gif)\n\n"
             f"*{GIF_CAPTION}* [More clips]({VIDEOS})\n\n"
             f"{_video('en')}\n\n*{FILM_CAPTION}*\n\n"
-            f"{native_block(lang)}"
-            f"![{MODELS[lang]['name']}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/card.png)\n\n")
+            f"{native_block(lang)}")
 
 
 def _bold_best(values: list[float | None], cells: list[str], higher: bool) -> list[str]:
@@ -306,8 +304,9 @@ def charts_section(lang: str, comp: dict, notes: str = "") -> str:
     if only := [x for x in behind["laya"] if x not in both]:
         others.append(f"Laya does better on {where(only)}")
     others.append("Laya is far smaller and faster")
-    charts = "\n\n".join(f"![{CHART_ALT[c]}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/{c}.png)" for c in CHART_ALT)
-    folded = f"\n<details>\n<summary>Significance and caveats</summary>\n\n{notes}\n\n</details>\n" if notes else ""
+    chart = lambda c: f"![{CHART_ALT[c]}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/{c}.png)"  # noqa: E731
+    charts = "\n\n".join(chart(c) for c in ("langs", "fixes"))
+    folded = f"\n<details>\n<summary>Significance and caveats</summary>\n\n{chart('jev')}\n\n{notes}\n\n</details>\n"
     return f"""## Results
 
 {charts}
@@ -320,7 +319,7 @@ Same items and client for every model, each as shipped: [Kev-4B](https://hugging
 def _training_section(training: dict | None) -> str:
     if not training:
         return ""
-    lines = ["## How it was trained", ""]
+    lines = ["<details>", "<summary><b>How it was trained</b></summary>", ""]
     base = training.get("base_model", "internlm/Intern-Decision-4B")
     rank = training.get("lora_rank")
     alpha = training.get("lora_alpha")
@@ -347,7 +346,7 @@ def _training_section(training: dict | None) -> str:
             tr_s = f"{tr:,}" if isinstance(tr, int) else "-"
             de_s = f"{de:,}" if isinstance(de, int) else "-"
             lines.append(f"| {name} | {en_s} | {tr_s} | {de_s} |")
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n\n</details>\n"
 
 
 def card(
@@ -362,6 +361,8 @@ def card(
     notes: str = "",
     comparison: dict | None = None,
     media: bool = False,
+    examples: str = "",
+    examples_url: str = "",
 ) -> str:
     m = MODELS[lang]
     name = m["name"]
@@ -377,7 +378,9 @@ def card(
         "base_model": "internlm/Intern-Decision-4B",
         "library_name": "transformers",
         "pipeline_tag": "text-classification",
-        "tags": ["decision-model", "jev", "typesafe", "system-one", "calibration", "conformal-prediction", "reasoning", "typed-decisions", "qwen3.5", "gguf", m["language"].lower()],
+        "datasets": ["mertkayacs/jevalt-data"],
+        "tags": ["decision-model", "calibration", "conformal-prediction", "uncertainty", "reasoning", "routing", "triage",
+                 "jev", "typesafe", "qwen3.5", m["language"].lower()],
     }
     head = "---\n" + "\n".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in front.items()) + "\n---\n\n"
 
@@ -390,15 +393,18 @@ def card(
     article = "An" if m["language"][0] in "AEIOU" else "A"
     training_sec = _training_section(training)
 
+    try_it = (f"## Try it\n\nOpen the [Space]({SPACE}), pick an example and press Decide, or write your own situation, question and options. "
+              f"These are the Space's examples in {m['language']} with {name}'s answers on 1 October 2026:\n\n{examples}\n\n"
+              f"Every probability of every run, in all three languages: [space-examples.json]({examples_url}).\n\n") if examples else \
+             f"## Try it\n\n[Hugging Face Space]({SPACE}), no install needed.\n\n"
+
     return head + f"""# {name}
 
-{media_block(lang) if media else ''}{article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
+{article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
 
-If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
+**[Try it](#try-it) · [Run it](#run-it) · [Results](#results) · [Use and limits](#use-and-limits) · [Links](#links)**
 
-**Try it**: [Hugging Face Space]({SPACE}) (no install needed).
-
-| | |
+{media_block(lang) if media else ''}{try_it}| | |
 |---|---|
 | Start checkpoint | [internlm/Intern-Decision-4B](https://huggingface.co/internlm/Intern-Decision-4B) (Qwen3.5-4B) |
 | Languages | {m['language']} first, the others still work |
@@ -422,33 +428,32 @@ client = TypeSafeClient(api_key="local", base_url="http://127.0.0.1:8000")
 ```
 
 {results}{training_sec}
-## Intended use
+## Use and limits
 
-- Routing, tagging and moderation at volume.
-- Calibrated probabilities for automated decisions.
-- On-device or on-prem inference with the GGUF build.
-
-## Out of scope
-
-- General knowledge QA beyond what a 4B model can hold.
-- Long-context summarization (8k context).
-- Production use without recalibrating on your own data.
-
-## Limits
-
-- Knowledge questions are bounded by a 4B model, and reasoning traces add little on our test rows (see the results).
+- Good for routing, tagging, triage and moderation at volume, and for automated decisions that need calibrated probabilities.
+- Runs on-device or on-prem with the GGUF build, so the data stays with you.
+- Knowledge is bounded by a 4B model, and the context is 8k tokens, so it is no tool for general questions or long summaries.
 - Probabilities are calibrated on our held-out data. Refit with `jevoss calibrate` on yours before you set thresholds.
-- No image input.
+- Reasoning traces add little on our test rows (see the results), and there is no image input.
 
 ## Citation
 
+<details>
+<summary>BibTeX</summary>
+
 {BIBTEX}
+
+</details>
 
 ## Links
 
 - Code, server and training: [{REPO}]({REPO})
 - Playground, probes and recipes: [{PLAYGROUND}]({PLAYGROUND})
 - Try it online: [Space]({SPACE})
+- The village game: [Emberwick](https://emberwick.mertkayacs.com)
+- Project site: [jevalt.mertkayacs.com](https://jevalt.mertkayacs.com)
+
+If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
 """
 
 
@@ -494,9 +499,12 @@ def gguf_card(lang: str, export_report: dict | None, memory_report: dict | None)
 
     front = {
         "license": "apache-2.0",
+        "language": ["en", "tr", "de"] if lang == "en" else [lang, "en"],
         "base_model": f"mertkayacs/{repo}",
+        "base_model_relation": "quantized",
         "quantized_by": "mertkayacs",
-        "tags": ["gguf", "llama.cpp", "decision-model", "calibration", m["language"].lower()],
+        "pipeline_tag": "text-classification",
+        "tags": ["gguf", "llama.cpp", "decision-model", "calibration", "local-ai", m["language"].lower()],
     }
     head = "---\n" + "\n".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in front.items()) + "\n---\n\n"
 
@@ -512,17 +520,17 @@ def gguf_card(lang: str, export_report: dict | None, memory_report: dict | None)
 
     return head + f"""# {name} GGUF
 
+Quantized GGUF files for {name}, the {m['language']} decision model, for CPUs and small machines. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
+
+**[Files](#files) · [Use with jevalt](#use-with-jevalt) · [Links](#links)** · Examples and results: [{name} card](https://huggingface.co/mertkayacs/{repo}#try-it) · Try it: [Space]({SPACE})
+
 ![{GIF_CAPTION}]({VIDEOS}/resolve/main/gifs/emberwick-en.gif)
 
 {_video('en')}
 
 *{FILM_CAPTION}*
 
-{native_block(lang)}Quantized GGUF files for {name}, the {m['language']} decision model. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
-
-If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
-
-## Files
+{native_block(lang)}## Files
 
 {table}
 
@@ -543,6 +551,8 @@ Then send the Jev request body to `http://127.0.0.1:8000/v1/systemone`. The answ
 - How it compares with Jev 1.13, Kev-4B and Laya: [charts on the model card](https://huggingface.co/mertkayacs/{repo}#results)
 - Try it online: [Space]({SPACE})
 - Code and training: [{REPO}]({REPO})
+
+If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
 """
 
 

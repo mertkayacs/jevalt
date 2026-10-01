@@ -83,9 +83,9 @@ def test_card_full():
     assert "Try it" in out
     assert "How it was trained" in out
     assert "LoRA rank: 32" in out
-    assert "Intended use" in out
-    assert "Out of scope" in out
+    assert "Use and limits" in out
     assert "Citation" in out
+    assert 'datasets: ["mertkayacs/jevalt-data"]' in out
     assert "@software{kaya2026jevalt" in out
     assert "Option order" in out
     assert "8.8%" in out  # probe formatted as pct
@@ -97,8 +97,17 @@ def test_card_missing_optional():
     assert "Try it" in out
     assert "How it was trained" not in out
     assert "Probes" not in out
-    assert "Intended use" in out
+    assert "Use and limits" in out
     assert "Citation" in out
+    assert "<summary><b>Türkçe özet</b></summary>" in out
+
+
+def test_card_examples():
+    table = "| Use case | Situation | Question | Answer |\n|---|---|---|---|\n| Support ticket | x | y | **Billing** 94.8% |"
+    out = card("en", OURS, BASE, SUITES, examples=table, examples_url="https://example.org/space-examples.json")
+    assert "**Billing** 94.8%" in out
+    assert "(https://example.org/space-examples.json)" in out
+    assert out.index("## Try it") < out.index("## Run it")
 
 
 def test_card_partial_gguf():

@@ -143,13 +143,13 @@ OTHER_NAMES = {"intern-decision-4b": "Intern-Decision-4B", "kev-4b": "Kev-4B", "
 COMPARE_FILES = "https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison"
 VIDEOS = "https://huggingface.co/datasets/mertkayacs/emberwick-videos"
 GIF_CAPTION = "Emberwick: every villager asks Deem-4B what to do next."
-FILM_CAPTION = "The one-minute film, sound on: three mistakes small decision models make and how JevAlt fixes each one."
+FILM_CAPTION = "The 53-second film, sound on: two mistakes small decision models make and how JevAlt fixes each one."
 # Turkish and German pages offer the clip and the film in their own language next to the English ones.
 NATIVE = {
-    "tr": ("Türkçe sürüm", "Emberwick Türkçe: her köylü bir sonraki adımını Karar-4B'ye soruyor.", "Bir dakikalık film, sesi açın.",
+    "tr": ("Türkçe sürüm", "Emberwick Türkçe: her köylü bir sonraki adımını Karar-4B'ye soruyor.", "53 saniyelik film, sesi açın.",
            "GIF (4K)", "hafif GIF"),
     "de": ("Deutsche Version", "Emberwick auf Deutsch: Jeder Dorfbewohner fragt Wähler-4B, was als Nächstes zu tun ist.",
-           "Der einminütige Film, mit Ton.", "GIF (4K)", "leichtes GIF"),
+           "Der 53-Sekunden-Film, mit Ton.", "GIF (4K)", "leichtes GIF"),
 }
 
 
@@ -266,12 +266,12 @@ Where the others do better: {'; '.join(others)}. Result files and every decision
 """
 
 
-JEV_NOTES = "https://docs.typesafe.ai/model-jaggedness/jev-1.13"
-JEV_AUDIT = "https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md"
+JEV_API = "https://docs.typesafe.ai/api"
+JEV_MODELS = "https://docs.typesafe.ai/models"
 CHART_ALT = {
     "langs": "Accuracy on English, Turkish and German decisions and on typed-decisions: JevAlt, Intern-Decision-4B, Kev-4B and Laya",
     "fixes": "Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya",
-    "jev": "What Jev 1.13 lacks and JevAlt has: thinking when unsure, an unknown answer, coverage sets, native Turkish and German, open weights, repeatable answers",
+    "jev": "What Jev 1.13 lacks and JevAlt has: thinking when unsure, coverage sets, models made for Turkish and German, open weights",
 }
 
 
@@ -311,7 +311,7 @@ def charts_section(lang: str, comp: dict, notes: str = "") -> str:
 
 {charts}
 
-Same items and client for every model, each as shipped: [Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) r10 and [Laya](https://huggingface.co/convaiinnovations/laya) 0.3.22 on their own servers with their own calibration. Jev 1.13 rows come from [TypeSafe's notes]({JEV_NOTES}) and an [independent audit]({JEV_AUDIT}). The held-out tests come from JevAlt's own data pipeline, so they favour JevAlt. {'; '.join(others)}. Every number and every decision: [results/comparison]({COMPARE_FILES}).
+Same items and client for every model, each as shipped: [Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) r10 and [Laya](https://huggingface.co/convaiinnovations/laya) 0.3.22 on their own servers with their own calibration. Jev 1.13 rows come from TypeSafe's [API reference]({JEV_API}) and [Models page]({JEV_MODELS}). The held-out tests come from JevAlt's own data pipeline, so they favour JevAlt. {'; '.join(others)}. Every number and every decision: [results/comparison]({COMPARE_FILES}).
 {folded}
 """
 

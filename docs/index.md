@@ -20,7 +20,7 @@ Your code acts on the numbers. A 0.97 can go straight through; a 0.55 can go to 
 
 ## What JevAlt adds
 
-![What Jev 1.13 lacks and JevAlt has: thinking when unsure, an unknown answer, coverage sets, native Turkish and German, open weights, repeatable answers](assets/charts/jev.png)
+![What Jev 1.13 lacks and JevAlt has: thinking when unsure, coverage sets, models made for Turkish and German, open weights](assets/charts/jev.png)
 
 ![Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya](assets/charts/fixes.png)
 

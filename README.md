@@ -13,7 +13,7 @@ JevAlt is three open 4B decision models: **Deem-4B** for English, **Karar-4B** f
 
 *In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, every villager asks Deem-4B what to do next.*
 
-<a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-en-1080p.mp4"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/film-poster-en.jpg" width="560" alt="Watch the one-minute film: three mistakes small decision models make and how JevAlt fixes each one"></a>
+<a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-en-1080p.mp4"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/film-poster-en.jpg" width="560" alt="Watch the 53-second film: two mistakes small decision models make and how JevAlt fixes each one"></a>
 
 *The 53-second film, sound on: two mistakes small decision models make and how JevAlt fixes each one. Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-tr-1080p.mp4) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-de-1080p.mp4).*
 

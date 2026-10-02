@@ -116,10 +116,10 @@ One programmatic generator per documented weakness. F4 permutations are added wh
 | F1 | Forced choice without unknown | Remove the deciding fact or build states that lack it; ask with and without an `unknown` option |
 | F2 | Negation inconsistency | Same state, a question and its negation; complementary Noul targets |
 | F3 | Noul vs Choice mismatch | Same question as Noul and as two-option Choice; identical probability expected |
-| F4 | Option order bias | Offline permutations of Choice options (3 per row); same distribution expected |
+| F4 | Option order bias | Shuffled copies of Choice rows with 3+ options, added when the mix is built: a quarter of the rows in R1, half in the language runs; same distribution expected |
 | F5 | Dates | Deadlines, windows, before/after, business days, locale formats; exact gold |
 | F6 | Numbers and counting | Line-item sums vs limits, counts, thresholds, unit conversions; exact gold |
-| F7 | Irrelevant long state | Pad state with unrelated records up to 1k, 3k, 6k tokens; unchanged gold |
+| F7 | Irrelevant long state | Pad state with unrelated records up to 1,000, 2,000 and 3,000 tokens; unchanged gold |
 | F8 | Prompt injection in state | Insert hostile text in the state in all three languages; unchanged gold |
 | F9 | Indirection and multi-hop | Two and three hop lookups over JSON records and policies; exact gold |
 | F10 | Contradictory or inverted criteria | Criteria that map yes to a negatively phrased condition; exact gold |
@@ -150,10 +150,11 @@ Short traces on the date, number, inverted-criteria and policy fix sets, written
 ## Training
 
 - **Base**: Intern-Decision-4B (Qwen3.5-4B, Apache-2.0)
-- **Method**: LoRA, rank 32, alpha 32
+- **Method**: LoRA on the bf16 weights, rank 32, alpha 32
 - **Loss**: soft-label cross-entropy on the decision logits, plus a 0.3-weighted language-model loss on short reasoning traces
 - **Hardware**: one A100 80 GB (HF Jobs flavor a100-large) with gradient checkpointing
-- **Runs**: R1, one multilingual epoch on 17,363 rows plus 2,308 option-order copies (learning rate 1e-4, validation soft Brier 0.231 to 0.053), then one specialization epoch per language from R1 at learning rate 5e-5 on a mix of all its own rows, a replay sample of its public rows and the other two languages: S-en 7,783 rows (validation Brier 0.0424 to 0.0403), S-tr 5,982 rows (0.0835 to 0.066), S-de 5,384 rows (0.1033 to 0.086). Half of the Choice rows with three or more options get a shuffled copy.
+- **Runs**: R1, one multilingual epoch on 17,363 rows, 2,306 of them shuffled option-order copies (learning rate 1e-4, 543 steps, 63 minutes, validation soft Brier 0.231 to 0.053), then one specialization epoch per language from R1 at learning rate 5e-5 on a mix of all its own rows, a replay sample of its public rows and the other two languages: S-en 7,783 rows (303 steps, 38 minutes, validation Brier 0.0424 to 0.0403), S-tr 5,982 rows (281 steps, 35 minutes, 0.0835 to 0.066), S-de 5,384 rows (210 steps, 28 minutes, 0.1033 to 0.086). Half of the Choice rows with three or more options get a shuffled copy.
+- **All jobs**: 11 training jobs: six short smoke and probe runs while finding settings that fit the GPU, a pilot at scale (R0, not released), R1 and the three language runs. The released models took about 2.7 A100 hours; the whole project, labeling included, cost 32.2 USD.
 
 The soft-label loss makes the model's distribution match the teachers' mean distribution, so a 60/40 case trains toward 60/40. The 0.3 LM weight on reasoning traces teaches the model to write useful traces without letting them dominate the decision head.
 

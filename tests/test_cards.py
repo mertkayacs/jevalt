@@ -91,6 +91,19 @@ def test_card_full():
     assert "8.8%" in out  # probe formatted as pct
 
 
+def test_card_training_details_and_fixes_fold():
+    training = {**TRAINING, "method": "LoRA on the bf16 weights, rank 32, alpha 32", "runs": "11 training jobs",
+                "compute": "about 2.7 A100 hours", "teachers": ["GLM-5.x", "Kimi K3 (54 rows)"]}
+    fixes = "<details>\n<summary><b>How we fixed each problem</b></summary>\n\n- **Hidden instructions.** x\n\n</details>\n"
+    out = card("en", OURS, BASE, SUITES, GGUF_REPORT, training, fixes=fixes)
+    assert "- Method: LoRA on the bf16 weights, rank 32, alpha 32" in out
+    assert "LoRA rank:" not in out
+    assert "- Runs: 11 training jobs" in out and "- Compute: about 2.7 A100 hours" in out
+    assert "- Writers, labelers and trace writers: GLM-5.x, Kimi K3 (54 rows)" in out
+    assert out.index("How we fixed each problem") < out.index("How it was trained") < out.index("## Use and limits")
+    assert "</details>\n\n<details>" in out, "a blank line keeps the two folds apart"
+
+
 def test_card_missing_optional():
     out = card("tr", OURS, BASE, SUITES)
     assert "Karar-4B" in out

@@ -86,6 +86,36 @@ Long noisy states are still a weak spot. Reasoning helps less than we hoped: wit
 
 </details>
 
+<details>
+<summary><b>How we fixed each problem</b></summary>
+
+Most fixes are a set of training rows aimed at one weak spot. Every number compares a model with its start checkpoint, Intern-Decision-4B, on rows held out from training. Across all of it, held-out accuracy rose 4.4 points in English (Deem-4B), 5.1 in Turkish (Karar-4B) and 11.5 in German (Wähler-4B).
+
+- **The data.** About 23,900 training rows in English, Turkish and German. Public sets with known answers (MASSIVE, Open-Jev, PAWS-X, typed-decisions); everyday situations written directly in each language by other open models; requests from the Emberwick game; and the fix sets below. Two teacher models from labs other than the writer give every written row a probability per option, and an answer counts only when both teachers and the writer agree on it. Those probabilities, the soft labels, are what the models learn. Test rows were split off by group, and their checksums recorded, before the final training runs.
+- **Hidden instructions.** A fix set of 827 rows hides a hostile line in the text (an order to the AI filter, a fake rule) at the start, the middle or the end, with the right answer unchanged. On our probe, hidden lines now change 14.0% of Deem-4B's answers, 19.0% of Karar-4B's and 17.5% of Wähler-4B's; the start checkpoint follows 41.5% of them. Held-out rows of this kind: 80.8% → 90.1%. Our target is under 10%.
+- **An honest "unknown".** A fix set of 310 rows removes the fact that decides the question and asks it with and without an `unknown` option. When the fact is missing, the models pick `unknown` in 9 of 11 held-out cases, as the start checkpoint does, and with more conviction: its probability rose from 0.55 to 0.74. Turn it on with `abstain: true`. Kev-4B and Laya have no such option.
+- **Option order.** Shuffled copies of choice questions with three or more options. Answers that change after a shuffle: 6.5% for Deem-4B, 7.25% for Karar-4B, 8.75% for the start checkpoint and 9.5% for Wähler-4B, which is slightly worse. Our target is under 2%.
+- **Long policies and long texts.** 390 rows give a policy with exceptions and sub-limits, with the right answer worked out by code, and 1,188 rows bury the facts in up to 3,000 tokens of unrelated records. Held-out policy rows: 55.3% → 80.0%. Padded rows: 91.2% → 95.4%. With 600 words of unrelated records in front, Deem-4B and Karar-4B still lose 17.4 points and Wähler-4B 12.2 (the start checkpoint 15.0); Kev-4B and Laya hold up better there.
+- **Negations.** A fix set of 368 twin rows asks the same thing as "is it so?" and "is it not so?" with mirrored answers. Held-out negated questions: 80.0% → 96.7% (30 rows).
+- **Dates and numbers.** 390 date rows and 383 number rows, answers computed by code, some with a short worked reasoning. Held-out dates: 61.3% → 71.3% (80 rows, within noise); numbers stayed at 68.2%. Dates remain a weak spot: Wähler-4B miscounted a return window across two months even with reasoning on.
+- **Honest confidence.** The soft labels teach how sure to be, and a temperature per question type and language, fitted on 3,224 held-out decisions, does the rest. Held-out Brier score: English 0.166 → 0.091, Turkish 0.142 → 0.058, German 0.275 → 0.120. The fitted temperatures are 1.08 to 1.10, the start checkpoint's about 2, so the trained models are close to calibrated before any scaling. On unseen public sets a temperature-scaled start checkpoint does as well, and on a few of them slightly better. The 80, 90 and 95% answer sets come from conformal thresholds fitted on the same rows.
+- **Native Turkish and German.** Turkish and German rows were written directly in those languages, the Turkish ones by the two models that won a blind native-feel test; a native edit pass reviewed 725 Turkish rows and rewrote 356; and each language run draws 70% of its rows from its own language. Held-out accuracy: Turkish 91.7% → 96.8%, German 80.5% → 92.0%. On public sets Wähler-4B gained 4.75 points on 10kGNAD; TurkishMMLU moved within noise.
+- **Thinking when unsure.** Short reasoning traces, kept only when they reach the right answer, trained at a lower weight. With `reasoning: "auto"` the model thinks (up to 256 tokens) only when its first answer is unsure. The gain is small: on English date, number and policy rows accuracy moved from 0.761 to 0.769, Turkish did not change, and the German Brier score got worse.
+
+</details>
+
+<details>
+<summary><b>How it was trained</b></summary>
+
+- Method: LoRA on the bf16 weights of Intern-Decision-4B, rank 32, alpha 32, on one A100 80 GB.
+- Shared run: 1 epoch over all three languages, 17,363 rows, 543 steps, 63 minutes.
+- Language runs, each starting from the shared adapter with 70% of its rows in its own language: 1 epoch each. Deem-4B 7,783 rows, 303 steps, 38 minutes; Karar-4B 5,982 rows, 281 steps, 35 minutes; Wähler-4B 5,384 rows, 210 steps, 28 minutes.
+- Runs: 11 training jobs in all. Six short smoke and probe runs while we found settings that fit the GPU, a pilot at scale, the shared run and the three language runs.
+- Compute: about 2.7 A100 hours for the released models. The whole project, labeling included, cost 32.2 USD.
+- The loss compares each option's probability at the answer position with the soft label, so the model learns how sure to be along with what to answer.
+
+</details>
+
 ## Limits
 
 - These are 4B models: general knowledge is limited, and long, noisy texts are still a weak spot.

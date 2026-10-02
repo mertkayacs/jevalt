@@ -326,12 +326,17 @@ def _training_section(training: dict | None) -> str:
     epochs = training.get("epochs")
     teachers = training.get("teachers", [])
     lines.append(f"- Base: {base} (Qwen3.5-4B)")
-    if rank is not None:
+    if training.get("method"):
+        lines.append(f"- Method: {training['method']}")
+    elif rank is not None:
         lines.append(f"- LoRA rank: {rank}" + (f", alpha: {alpha}" if alpha is not None else ""))
     if epochs is not None:
         lines.append(f"- Epochs: {epochs}")
+    for key, label in (("runs", "Runs"), ("compute", "Compute")):
+        if training.get(key):
+            lines.append(f"- {label}: {training[key]}")
     if teachers:
-        lines.append(f"- Teachers: {', '.join(teachers)}")
+        lines.append(f"- Writers, labelers and trace writers: {', '.join(teachers)}")
     sources = training.get("sources")
     if sources:
         lines.append("")
@@ -363,7 +368,9 @@ def card(
     media: bool = False,
     examples: str = "",
     examples_url: str = "",
+    fixes: str = "",
 ) -> str:
+    """`fixes` is the folded "How we fixed each problem" section (workspace release/how_md.py), placed after the results."""
     m = MODELS[lang]
     name = m["name"]
     ram = ""
@@ -427,7 +434,7 @@ from typesafe_sdk import TypeSafeClient, Choice, Noul
 client = TypeSafeClient(api_key="local", base_url="http://127.0.0.1:8000")
 ```
 
-{results}{training_sec}
+{results}{fixes + chr(10) if fixes else ''}{training_sec}
 ## Use and limits
 
 - Good for routing, tagging, triage and moderation at volume, and for automated decisions that need calibrated probabilities.

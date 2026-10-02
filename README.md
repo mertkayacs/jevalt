@@ -74,7 +74,7 @@ Same items and client for every model, each as shipped: [Kev-4B](https://hugging
 Where the others lead: Kev-4B on 10kGNAD, and on GermEval 2017 against Wähler-4B; Kev-4B and Laya lose less accuracy under 600 words of padding; the start checkpoint stays ahead on JevBench-hard; Laya is far smaller and faster. Every number with Brier and ECE, and every decision: [results](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results), [comparison](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison).
 
 <details>
-<summary>Significance and caveats</summary>
+<summary><b>Significance and caveats</b></summary>
 
 ![What Jev 1.13 lacks and JevAlt has: thinking when unsure, an unknown answer, coverage sets, native Turkish and German, open weights, repeatable answers](docs/assets/charts/jev.png)
 
@@ -95,7 +95,7 @@ Long noisy states are still a weak spot. Reasoning helps less than we hoped: wit
 ## Reproduce
 
 <details>
-<summary>Training and evaluation code in <code>training/</code></summary>
+<summary><b>Training and evaluation code in <code>training/</code></b></summary>
 
 - `training/mix.py` composes a training mix from canonical JSONL files.
 - `training/train.py` runs LoRA fine-tuning of Intern-Decision-4B on one A100 80 GB (HF Jobs flavor a100-large) with gradient checkpointing.
@@ -118,7 +118,7 @@ Long noisy states are still a weak spot. Reasoning helps less than we hoped: wit
 Apache-2.0, for the code and the weights.
 
 <details>
-<summary>BibTeX</summary>
+<summary><b>BibTeX</b></summary>
 
 ```bibtex
 @software{kaya2026jevalt,

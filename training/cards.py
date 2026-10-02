@@ -306,7 +306,7 @@ def charts_section(lang: str, comp: dict, notes: str = "") -> str:
     others.append("Laya is far smaller and faster")
     chart = lambda c: f"![{CHART_ALT[c]}](https://huggingface.co/mertkayacs/{repo}/resolve/main/assets/{c}.png)"  # noqa: E731
     charts = "\n\n".join(chart(c) for c in ("langs", "fixes"))
-    folded = f"\n<details>\n<summary>Significance and caveats</summary>\n\n{chart('jev')}\n\n{notes}\n\n</details>\n"
+    folded = f"\n<details>\n<summary><b>Significance and caveats</b></summary>\n\n{chart('jev')}\n\n{notes}\n\n</details>\n"
     return f"""## Results
 
 {charts}
@@ -439,7 +439,7 @@ client = TypeSafeClient(api_key="local", base_url="http://127.0.0.1:8000")
 ## Citation
 
 <details>
-<summary>BibTeX</summary>
+<summary><b>BibTeX</b></summary>
 
 {BIBTEX}
 

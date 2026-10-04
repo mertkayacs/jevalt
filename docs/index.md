@@ -26,13 +26,15 @@ Your code acts on the numbers. A 0.97 can go straight through; a 0.55 can go to 
 
 ![What Jev 1.13 lacks and JevAlt has: thinking when unsure, coverage sets, models made for Turkish and German, open weights](assets/charts/jev.png)
 
-![Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya](assets/charts/fixes.png)
+![Hidden instructions, long policies and negated questions: JevAlt against Kev-4B and Laya](assets/charts/fixes.png)
 
 Turn the extras on per request with `reasoning: "auto"`, `abstain: true` and `coverage: 0.9`. The Jev 1.13 rows come from [TypeSafe's notes](https://docs.typesafe.ai/model-jaggedness/jev-1.13) and an [independent audit](https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md). The measured numbers behind each row are on the model cards and in the [JevOss](https://github.com/mertkayacs/jevoss) reports.
 
 ## Tested on the live model
 
-We sent Deem-4B 178 requests in English with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+We sent the three live models 390 requests across 5 cases (130 per language).
+
+We sent Deem-4B 130 requests in English with known answers on 4 October 2026. Deem-4B answered 122 of 130 correctly; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
 
 | Case | What was sent | Result |
 |---|---|---|
@@ -40,7 +42,6 @@ We sent Deem-4B 178 requests in English with known answers on 4 October 2026; ev
 | Long policies | 20 customers against one six-rule return policy | 17 of 20 matched the answer computed from the rules |
 | Negations | 15 short facts, each asked plain and negated | 29 of 30 correct |
 | Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
-| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
 | Casual messages | 20 casual messages written in English, with typos and slang | 20 of 20 routed to the right team |
 
 <details>
@@ -48,7 +49,7 @@ We sent Deem-4B 178 requests in English with known answers on 4 October 2026; ev
 
 ### Turkish
 
-We sent Karar-4B 178 requests in Turkish with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+We sent Karar-4B 130 requests in Turkish with known answers on 4 October 2026. Karar-4B answered 113 of 130 correctly; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
 
 | Case | What was sent | Result |
 |---|---|---|
@@ -56,12 +57,11 @@ We sent Karar-4B 178 requests in Turkish with known answers on 4 October 2026; e
 | Long policies | 20 customers against one six-rule return policy | 16 of 20 matched the answer computed from the rules |
 | Negations | 15 short facts, each asked plain and negated | 29 of 30 correct |
 | Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
-| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
 | Casual messages | 20 casual messages written in Turkish, with typos and slang | 19 of 20 routed to the right team |
 
 ### German
 
-We sent Wähler-4B 178 requests in German with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+We sent Wähler-4B 130 requests in German with known answers on 4 October 2026. Wähler-4B answered 122 of 130 correctly; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
 
 | Case | What was sent | Result |
 |---|---|---|
@@ -69,7 +69,6 @@ We sent Wähler-4B 178 requests in German with known answers on 4 October 2026; 
 | Long policies | 20 customers against one six-rule return policy | 14 of 20 matched the answer computed from the rules |
 | Negations | 15 short facts, each asked plain and negated | 30 of 30 correct |
 | Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
-| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
 | Casual messages | 20 casual messages written in German, with typos and slang | 20 of 20 routed to the right team |
 
 </details>

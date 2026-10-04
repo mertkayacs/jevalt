@@ -35,7 +35,9 @@ Karar-4B and Wähler-4B get the Turkish and German versions right too: 21 of 21 
 
 ## Tested on the live model
 
-We sent Deem-4B 178 requests in English with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+We sent the three live models 390 requests across 5 cases (130 per language).
+
+We sent Deem-4B 130 requests in English with known answers on 4 October 2026. Deem-4B answered 122 of 130 correctly; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
 
 | Case | What was sent | Result |
 |---|---|---|
@@ -43,7 +45,6 @@ We sent Deem-4B 178 requests in English with known answers on 4 October 2026; ev
 | Long policies | 20 customers against one six-rule return policy | 17 of 20 matched the answer computed from the rules |
 | Negations | 15 short facts, each asked plain and negated | 29 of 30 correct |
 | Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
-| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
 | Casual messages | 20 casual messages written in English, with typos and slang | 20 of 20 routed to the right team |
 
 <details>
@@ -51,7 +52,7 @@ We sent Deem-4B 178 requests in English with known answers on 4 October 2026; ev
 
 ### Turkish
 
-We sent Karar-4B 178 requests in Turkish with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+We sent Karar-4B 130 requests in Turkish with known answers on 4 October 2026. Karar-4B answered 113 of 130 correctly; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
 
 | Case | What was sent | Result |
 |---|---|---|
@@ -59,12 +60,11 @@ We sent Karar-4B 178 requests in Turkish with known answers on 4 October 2026; e
 | Long policies | 20 customers against one six-rule return policy | 16 of 20 matched the answer computed from the rules |
 | Negations | 15 short facts, each asked plain and negated | 29 of 30 correct |
 | Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
-| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
 | Casual messages | 20 casual messages written in Turkish, with typos and slang | 19 of 20 routed to the right team |
 
 ### German
 
-We sent Wähler-4B 178 requests in German with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+We sent Wähler-4B 130 requests in German with known answers on 4 October 2026. Wähler-4B answered 122 of 130 correctly; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
 
 | Case | What was sent | Result |
 |---|---|---|
@@ -72,7 +72,6 @@ We sent Wähler-4B 178 requests in German with known answers on 4 October 2026; 
 | Long policies | 20 customers against one six-rule return policy | 14 of 20 matched the answer computed from the rules |
 | Negations | 15 short facts, each asked plain and negated | 30 of 30 correct |
 | Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
-| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
 | Casual messages | 20 casual messages written in German, with typos and slang | 20 of 20 routed to the right team |
 
 </details>
@@ -109,9 +108,9 @@ For Turkish or German, serve that model instead: `jevalt serve --model mertkayac
 
 ## Results
 
-![Accuracy on English, Turkish and German decisions and on typed-decisions: JevAlt, Intern-Decision-4B, Kev-4B and Laya](docs/assets/charts/langs.png)
+![Accuracy on English, Turkish and German decisions and on typed-decisions: JevAlt, Kev-4B and Laya](docs/assets/charts/langs.png)
 
-![Hidden instructions, option order, long policies and negated questions: JevAlt against Intern-Decision-4B, Kev-4B and Laya](docs/assets/charts/fixes.png)
+![Hidden instructions, long policies and negated questions: JevAlt against Kev-4B and Laya](docs/assets/charts/fixes.png)
 
 Same items and client for every model, each as shipped: [Kev-4B](https://huggingface.co/jaredpalmer/kev-4b) r10 and [Laya](https://huggingface.co/convaiinnovations/laya) 0.3.22 ran on their own servers with their own calibration. Jev 1.13 rows come from [TypeSafe's notes](https://docs.typesafe.ai/model-jaggedness/jev-1.13) and an [independent audit](https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md). The held-out tests come from JevAlt's own data pipeline, so they favour JevAlt.
 
@@ -122,29 +121,28 @@ Where the others lead: Kev-4B on 10kGNAD, and on GermEval 2017 against Wähler-4
 
 ![What Jev 1.13 lacks and JevAlt has: thinking when unsure, coverage sets, models made for Turkish and German, open weights](docs/assets/charts/jev.png)
 
-A paired bootstrap (2,000 resamples) puts every held-out gain well above zero: +4.4, +5.1 and +11.5 accuracy points in each model's own language. Off the training distribution the picture is flatter. Wähler-4B gains 4.75 points on 10kGNAD and Karar-4B 4.0 on GermEval, both significant; TurkishMMLU, typed-decisions and JevBench-hard show no significant accuracy change, and Brier gets slightly worse on typed-decisions and JevBench-hard. JevAlt trained on the typed-decisions train split; its scores use the test split.
+A paired bootstrap (2,000 resamples) finds a significant accuracy gap against Kev-4B in each model's own language. On held-out English decisions, Kev-4B answers 84.7% correctly and Deem-4B 94.7%; on Turkish decisions, Kev-4B answers 87.1% and Karar-4B 96.8%; on German decisions, Kev-4B answers 81.1% and Wähler-4B 92.0%. On 10kGNAD, Wähler-4B answers 62.5% correctly and Kev-4B 65.3%; on GermEval 2017, Wähler-4B answers 64.3% correctly, Karar-4B 65.5% and Kev-4B 65.3%. These suites were outside the training data. JevAlt trained on the typed-decisions train split; its scores use the test split.
 
 Kev-4B and Laya received every row in the shapes the TypeSafe docs use (Noul criteria keyed `true`/`false`, Score levels as a list). Rows that need the `unknown` option are left out of every model's score, because Kev-4B and Laya do not offer it. Probes use 100 typed-decisions items.
 
-Long noisy states are still a weak spot. Reasoning helps less than we hoped: with the fitted thresholds, `reasoning: "auto"` moved Deem-4B from 0.761 to 0.769 on the English date, number and policy test rows, left Karar-4B unchanged and made Wähler-4B's Brier worse ([details](https://mertkayacs.github.io/jevalt/reasoning/)).
+Long noisy states are still a weak spot. With the fitted thresholds, Deem-4B answers the English date, number and policy test rows with 0.761 accuracy when reasoning is off and 0.769 with `reasoning: "auto"`. Karar-4B's answers are unchanged. Wähler-4B's Brier is 0.519 when reasoning is off and 0.629 with `reasoning: "auto"` ([details](https://mertkayacs.github.io/jevalt/reasoning/)).
 
 </details>
 
 <details>
 <summary><b>How we fixed each problem</b></summary>
 
-Most fixes are a set of training rows aimed at one weak spot. Every number compares a model with its start checkpoint, Intern-Decision-4B, on rows held out from training. Across all of it, held-out accuracy rose 4.4 points in English (Deem-4B), 5.1 in Turkish (Karar-4B) and 11.5 in German (Wähler-4B).
+Most fixes are a set of training rows aimed at one weak spot. The comparisons below use Kev-4B on the same held-out rows. JevAlt's pooled results use each model's own language. On held-out English decisions, Kev-4B answers 84.7% correctly and Deem-4B 94.7%; on Turkish decisions, Kev-4B answers 87.1% and Karar-4B 96.8%; on German decisions, Kev-4B answers 81.1% and Wähler-4B 92.0%.
 
 - **The data.** About 23,900 training rows in English, Turkish and German. Public sets with known answers (MASSIVE, Open-Jev, PAWS-X, typed-decisions); everyday situations written directly in each language by other open models; requests from the Emberwick game; and the fix sets below. Two teacher models from labs other than the writer give every written row a probability per option, and an answer counts only when both teachers and the writer agree on it. Those probabilities, the soft labels, are what the models learn. Test rows were split off by group, and their checksums recorded, before the final training runs.
-- **Hidden instructions.** A fix set of 827 rows hides a hostile line in the text (an order to the AI filter, a fake rule) at the start, the middle or the end, with the right answer unchanged. On our probe, hidden lines now change 14.0% of Deem-4B's answers, 19.0% of Karar-4B's and 17.5% of Wähler-4B's; the start checkpoint follows 41.5% of them. Held-out rows of this kind: 80.8% → 90.1%. Our target is under 10%.
-- **An honest "unknown".** A fix set of 310 rows removes the fact that decides the question and asks it with and without an `unknown` option. When the fact is missing, the models pick `unknown` in 9 of 11 held-out cases, as the start checkpoint does, and with more conviction: its probability rose from 0.55 to 0.74. Turn it on with `abstain: true`. Kev-4B and Laya have no such option.
-- **Option order.** Shuffled copies of choice questions with three or more options. Answers that change after a shuffle: 6.5% for Deem-4B, 7.25% for Karar-4B, 8.75% for the start checkpoint and 9.5% for Wähler-4B, which is slightly worse. Our target is under 2%.
-- **Long policies and long texts.** 390 rows give a policy with exceptions and sub-limits, with the right answer worked out by code, and 1,188 rows bury the facts in up to 3,000 tokens of unrelated records. Held-out policy rows: 55.3% → 80.0%. Padded rows: 91.2% → 95.4%. With 600 words of unrelated records in front, Deem-4B and Karar-4B still lose 17.4 points and Wähler-4B 12.2 (the start checkpoint 15.0); Kev-4B and Laya hold up better there.
-- **Negations.** A fix set of 368 twin rows asks the same thing as "is it so?" and "is it not so?" with mirrored answers. Held-out negated questions: 80.0% → 96.7% (30 rows).
-- **Dates and numbers.** 390 date rows and 383 number rows, answers computed by code, some with a short worked reasoning. Held-out dates: 61.3% → 71.3% (80 rows, within noise); numbers stayed at 68.2%. Dates remain a weak spot: Wähler-4B miscounted a return window across two months even with reasoning on.
-- **Honest confidence.** The soft labels teach how sure to be, and a temperature per question type and language, fitted on 3,224 held-out decisions, does the rest. Held-out Brier score: English 0.166 → 0.091, Turkish 0.142 → 0.058, German 0.276 → 0.119. The fitted temperatures are 1.08 to 1.10, the start checkpoint's about 2, so the trained models are close to calibrated before any scaling. On unseen public sets a temperature-scaled start checkpoint does as well, and on a few of them slightly better. The 80, 90 and 95% answer sets come from conformal thresholds fitted on the same rows.
-- **Native Turkish and German.** Turkish and German rows were written directly in those languages, the Turkish ones by the two models that won a blind native-feel test; a native edit pass reviewed 725 Turkish rows and rewrote 356; and each language run draws 70% of its rows from its own language. Held-out accuracy: Turkish 91.7% → 96.8%, German 80.5% → 92.0%. On public sets Wähler-4B gained 4.75 points on 10kGNAD; TurkishMMLU moved within noise.
-- **Thinking when unsure.** Short reasoning traces, kept only when they reach the right answer, trained at a lower weight. With `reasoning: "auto"` the model thinks (up to 256 tokens) only when its first answer is unsure. The gain is small: on English date, number and policy rows accuracy moved from 0.761 to 0.769, Turkish did not change, and the German Brier score got worse.
+- **Hidden instructions.** A fix set of 827 rows hides a hostile line in the text (an order to the AI filter, a fake rule) at the start, the middle or the end, with the right answer unchanged. On our probe, hidden lines change 36.0% of Kev-4B's answers, 14.0% of Deem-4B's, 19.0% of Karar-4B's and 17.5% of Wähler-4B's. On 203 held-out planted-instruction rows, Kev-4B answers 81.3% correctly and JevAlt 90.1%. Our target is under 10%.
+- **An honest "unknown".** A fix set of 310 rows removes the fact that decides the question and asks it with and without an `unknown` option. On 11 held-out cases without the deciding fact, Kev-4B answers `unknown` in 0 and JevAlt in 9; Kev-4B and Laya have no `unknown` option. The model we started from, Intern-Decision-4B, already answers `unknown` in 9 of 11; training raised the mean probability of `unknown` from 0.55 to 0.74. Turn it on with `abstain: true`.
+- **Long policies and long texts.** 390 rows give a policy with exceptions and sub-limits, with the right answer worked out by code, and 1,188 rows bury the facts in up to 3,000 tokens of unrelated records. On 150 held-out policy rows, Kev-4B answers 59.3% correctly and JevAlt 80.0%. On 285 padded rows, Kev-4B answers 87.4% correctly and JevAlt 95.4%. With 600 words of unrelated records in front, Deem-4B and Karar-4B lose 17.4 accuracy points and Wähler-4B 12.2; Kev-4B loses 5.4 and Laya 10.4 points.
+- **Negations.** A fix set of 368 twin rows asks the same thing as "is it so?" and "is it not so?" with mirrored answers. On 30 held-out negated questions, Kev-4B answers 76.7% correctly and JevAlt 96.7%.
+- **Dates and numbers.** 390 date rows and 383 number rows, answers computed by code, some with a short worked reasoning. On 80 held-out date rows, Kev-4B answers 67.5% correctly and JevAlt 71.3%; the gap is within noise. On 44 number rows, Kev-4B and JevAlt both answer 68.2% correctly. Dates remain a weak spot: Wähler-4B miscounted a return window across two months even with reasoning on.
+- **Honest confidence.** The soft labels teach how sure to be, and a temperature per question type and language, fitted on 3,224 held-out decisions, does the rest. On held-out English decisions, Kev-4B's Brier score is 0.256 and Deem-4B's 0.091; on Turkish decisions, Kev-4B's is 0.214 and Karar-4B's 0.058; on German decisions, Kev-4B's is 0.298 and Wähler-4B's 0.119. Deem-4B's fitted temperature is 1.10, Karar-4B's 1.08 and Wähler-4B's 1.10. The 80, 90 and 95% answer sets use conformal thresholds fitted on the same rows.
+- **Native Turkish and German.** Turkish and German rows were written directly in those languages, the Turkish ones by the two models that won a blind native-feel test; a native edit pass reviewed 725 Turkish rows and rewrote 356; and each language run draws 70% of its rows from its own language. On held-out Turkish decisions, Kev-4B answers 87.1% correctly and Karar-4B 96.8%; on German decisions, Kev-4B answers 81.1% and Wähler-4B 92.0%. On 10kGNAD, Kev-4B answers 65.3% correctly and Wähler-4B 62.5%.
+- **Thinking when unsure.** Short reasoning traces, kept only when they reach the right answer, trained at a lower weight. With `reasoning: "auto"` the model thinks (up to 256 tokens) only when its first answer is unsure. On English date, number and policy rows, Deem-4B's accuracy is 0.761 with reasoning off and 0.769 with `reasoning: "auto"`; Karar-4B's answers are unchanged, and Wähler-4B's Brier is 0.519 with reasoning off and 0.629 with `reasoning: "auto"`.
 
 </details>
 

@@ -26,7 +26,7 @@ Your code acts on the numbers. A 0.97 can go straight through; a 0.55 can go to 
 
 ![What Jev 1.13 lacks and JevAlt has: thinking when unsure, coverage sets, models made for Turkish and German, open weights](assets/charts/jev.png)
 
-![Hidden instructions, long policies and negated questions: JevAlt against Kev-4B and Laya](assets/charts/fixes.png)
+![Hidden instructions, long irrelevant text, long policies and negated questions: JevAlt against Kev-4B and Laya](assets/charts/fixes.png)
 
 Turn the extras on per request with `reasoning: "auto"`, `abstain: true` and `coverage: 0.9`. The Jev 1.13 rows come from [TypeSafe's notes](https://docs.typesafe.ai/model-jaggedness/jev-1.13) and an [independent audit](https://github.com/jujumilk3/jev-calibration-audit/blob/main/FINDINGS.md). The measured numbers behind each row are on the model cards and in the [JevOss](https://github.com/mertkayacs/jevoss) reports.
 

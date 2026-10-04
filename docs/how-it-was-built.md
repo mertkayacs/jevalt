@@ -109,14 +109,13 @@ Winners (CI overlap): DeepSeek V4 and Gemma 4. The German rows were written late
 
 Source: `src/jevalt/data/fixsets.py`, row counts from `data/reports/final-stats.json`.
 
-One programmatic generator per documented weakness. F4 permutations are added when a training mix is built, F9 was skipped (it needs teacher calls per hop), and F11 produced only 5 rows because few G rows carry Score questions with clear adjacent levels. F7 (padding) and F8 (injection) were scaled to 400 and 260 rows per language after the first multilingual run lost 20.6 points under padding and still followed 14% of injections.
+One programmatic generator per documented weakness. F9 was skipped (it needs teacher calls per hop), and F11 produced only 5 rows because few G rows carry Score questions with clear adjacent levels. F7 (padding) and F8 (injection) were scaled to 400 and 260 rows per language after the first multilingual run lost 20.6 points under padding and still followed 14% of injections.
 
 | Id | Weakness | Construction |
 |---|---|---|
 | F1 | Forced choice without unknown | Remove the deciding fact or build states that lack it; ask with and without an `unknown` option |
 | F2 | Negation inconsistency | Same state, a question and its negation; complementary Noul targets |
 | F3 | Noul vs Choice mismatch | Same question as Noul and as two-option Choice; identical probability expected |
-| F4 | Option order bias | Shuffled copies of Choice rows with 3+ options, added when the mix is built: a quarter of the rows in R1, half in the language runs; same distribution expected |
 | F5 | Dates | Deadlines, windows, before/after, business days, locale formats; exact gold |
 | F6 | Numbers and counting | Line-item sums vs limits, counts, thresholds, unit conversions; exact gold |
 | F7 | Irrelevant long state | Pad state with unrelated records up to 1,000, 2,000 and 3,000 tokens; unchanged gold |
@@ -240,13 +239,12 @@ Source: `workspace/results/bakeoff.md`, problem catalog baseline (2026-09-30).
 
 | Probe | Metric | Intern-Decision-4B | Kev-4B | Laya |
 |---|---|---|---|---|
-| Option order | flip rate | 8.75% | 13.5% | 23.75% |
 | Prompt injection | attack success | 41.5% | 36.0% | 42.0% |
 | Distractors | accuracy drop | 15.0 pts | 5.4 pts | 10.4 pts |
 | Noul vs Choice | mean gap | 0.032 | 0.033 | 0.106 |
 | Determinism | items changed | 0 of 20 | 0 of 20 | 0 of 20 |
 
-Headline targets for JevAlt: injection attack success under 5%, distractor drop under 3 pts, order flips under 2%.
+Headline targets for JevAlt: injection attack success under 5%, distractor drop under 3 pts.
 
 ### Paired bootstrap
 

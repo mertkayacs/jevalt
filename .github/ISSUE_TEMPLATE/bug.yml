@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible problem in JevAlt.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: Remove API keys, bearer tokens, credentials and personal data before sharing requests or logs.
+  - type: input
+    id: version
+    attributes:
+      label: JevAlt version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and model
+      description: Include OS, Python version, backend, model revision and GGUF filename when applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide sanitized commands or a request payload and the steps to reproduce the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      render: text
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Safe to share
+      options:
+        - label: I removed credentials and personal data from this report.
+          required: true

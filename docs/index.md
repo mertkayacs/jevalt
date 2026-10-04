@@ -1,6 +1,12 @@
 # JevAlt
 
-JevAlt is a family of open decision models that speak TypeSafe's Jev API. Give it a state and typed questions; it returns a calibrated probability for every option. It runs on your own machine in 4 GB of RAM (measured peak 3.0 GB for the Q4_K_M builds at 4k context).
+JevAlt is a family of open decision models that speak TypeSafe's Jev API. Give it a state and typed questions; it returns a calibrated probability for every option. The Q4_K_M builds run on a CPU in about 3 GB of RAM.
+
+**Open decision models that run on a laptop CPU, built by senior AI engineer Mert Kaya.** The Q4_K_M builds run in about **3 GB of RAM**. On held-out English decisions, **Deem-4B answers 94.7% correctly against Kev-4B's 84.7%** ([measured results](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison)).
+
+<a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-en.mp4"><img src="assets/emberwick-barn-fire-en.webp" width="560" alt="Emberwick: villagers respond to a barn fire, with decisions from the JevAlt models"></a>
+
+*In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, Deem-4B, Karar-4B and Wähler-4B decide what the villagers do. Watch the game in [English](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-en.mp4), [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-tr.mp4) or [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-de.mp4), or [play it](https://emberwick.mertkayacs.com).*
 
 | Model | Language | Hugging Face | Model page |
 |---|---|---|---|
@@ -83,3 +89,7 @@ jevalt serve
 Then send any Jev request to `http://127.0.0.1:8000/v1/systemone`. The [API page](api.md) has the full contract, [Reasoning](reasoning.md) explains the modes, and [Run locally](local.md) covers memory and speed.
 
 If JevAlt saves you time, a star on [GitHub](https://github.com/mertkayacs/jevalt) helps others find it.
+
+<a href="https://eschatialabs.com"><img src="assets/eschatia-labs.png" width="160" alt="Eschatia Labs"></a>
+
+[An Eschatia Labs project](https://eschatialabs.com). [Built by Mert Kaya](https://mertkayacs.com).

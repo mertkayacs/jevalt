@@ -2,6 +2,8 @@
 
 JevAlt is three open 4B decision models: **Deem-4B** for English, **Karar-4B** for Turkish and **Wähler-4B** for German. Give one a situation and a typed question, and it returns a calibrated probability for every option. The models speak the Jev API (`POST /v1/systemone`), so existing Jev clients work unchanged, and the Q4_K_M builds run on a CPU in about 3 GB of RAM.
 
+**Open decision models that run on a laptop CPU, built by senior AI engineer Mert Kaya.** The Q4_K_M builds run in about **3 GB of RAM**. On held-out English decisions, **Deem-4B answers 94.7% correctly against Kev-4B's 84.7%** ([measured results](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison)).
+
 [![Try it in the Space](https://img.shields.io/badge/try%20it-Hugging%20Face%20Space-ffcc4d)](https://huggingface.co/spaces/mertkayacs/JevAlt)
 [![Website](https://img.shields.io/badge/website-jevalt.mertkayacs.com-2e4a7d)](https://jevalt.mertkayacs.com)
 [![Docs](https://img.shields.io/badge/docs-mertkayacs.github.io%2Fjevalt-3a7d44)](https://mertkayacs.github.io/jevalt/)
@@ -9,9 +11,9 @@ JevAlt is three open 4B decision models: **Deem-4B** for English, **Karar-4B** f
 
 **[Try it](#try-it) · [Models](#models) · [Run it](#run-it-on-your-machine) · [Results](#results) · [Limits](#limits) · [Related](#related) · [Citation](#license-and-citation)**
 
-![Emberwick: every villager asks Deem-4B what to do next](https://raw.githubusercontent.com/mertkayacs/jevalt/media/emberwick-en.gif)
+<a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-en.mp4"><img src="docs/assets/emberwick-barn-fire-en.webp" width="560" alt="Emberwick: villagers respond to a barn fire, with decisions from the JevAlt models"></a>
 
-*In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, every villager asks Deem-4B what to do next.*
+*In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, Deem-4B, Karar-4B and Wähler-4B decide what the villagers do. Watch the game in [English](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-en.mp4), [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-tr.mp4) or [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/cuts/emberwick-de.mp4), or [play it](https://emberwick.mertkayacs.com).*
 
 <a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/problems/jevalt-problems-en-1080p.mp4"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/problems-poster-en.jpg" width="560" alt="Watch the 103-second film: five problems of small decision models and how JevAlt handles each"></a>
 
@@ -209,3 +211,7 @@ Apache-2.0, for the code and the weights.
 JevAlt starts from [internlm/Intern-Decision-4B](https://huggingface.co/internlm/Intern-Decision-4B) (Qwen3.5-4B), which is Apache-2.0. The API follows TypeSafe's public `/v1/systemone` specification, so existing clients keep working. JevAlt is an independent project with no affiliation to TypeSafe AI. Jev is a TypeSafe AI model.
 
 If JevAlt is useful to you, a star on GitHub helps other people find it.
+
+<a href="https://eschatialabs.com"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/main/docs/assets/eschatia-labs.png" width="160" alt="Eschatia Labs"></a>
+
+[An Eschatia Labs project](https://eschatialabs.com). [Built by Mert Kaya](https://mertkayacs.com).

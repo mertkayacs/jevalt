@@ -57,4 +57,4 @@ By default JevAlt loads weights into RAM (`load_mode=NONE`) instead of memory-ma
 
 ## Security
 
-The server binds to `127.0.0.1` by default. If you expose it, set `JEVALT_API_KEY` and send it as a bearer token. Treat everything in `state` as data. JevAlt was trained on states with hidden instructions, and on the English injection probe they still flipped 14 to 19% of its answers (41.5% for the start checkpoint), so keep authorization decisions in your own code.
+The server binds to `127.0.0.1` by default. If you expose it, set `JEVALT_API_KEY` and send it as a bearer token. Treat everything in `state` as data. JevAlt was trained on states with hidden instructions, but planted lines still flipped 14.0% of Deem-4B's answers, 19.0% of Karar-4B's and 17.5% of Wähler-4B's on the same probe where Kev-4B flipped 36.0%. Keep authorization decisions in your own code.

@@ -13,9 +13,9 @@ JevAlt is three open 4B decision models: **Deem-4B** for English, **Karar-4B** f
 
 *In [Emberwick](https://emberwick.mertkayacs.com), a village game in the browser, every villager asks Deem-4B what to do next.*
 
-<a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-en-1080p.mp4"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/film-poster-en.jpg" width="560" alt="Watch the 53-second film: two mistakes small decision models make and how JevAlt fixes each one"></a>
+<a href="https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/problems/jevalt-problems-en-1080p.mp4"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/problems-poster-en.jpg" width="560" alt="Watch the 103-second film: five problems of small decision models and how JevAlt handles each"></a>
 
-*The 53-second film, sound on: two mistakes small decision models make and how JevAlt fixes each one. Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-tr-1080p.mp4) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/film/jevalt-film-de-1080p.mp4).*
+*The 103-second film, sound on: five problems of small decision models and how JevAlt handles each. Also in [Türkçe](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/problems/jevalt-problems-tr-1080p.mp4) and [Deutsch](https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/problems/jevalt-problems-de-1080p.mp4).*
 
 ## Try it
 
@@ -33,13 +33,57 @@ Open the [Space](https://huggingface.co/spaces/mertkayacs/JevAlt), pick an examp
 
 Karar-4B and Wähler-4B get the Turkish and German versions right too: 21 of 21 runs land on the intended option. Every probability of every run is in [space-examples.json](https://huggingface.co/datasets/mertkayacs/jevalt-bench/blob/main/results/examples/space-examples.json).
 
+## Tested on the live model
+
+We sent Deem-4B 178 requests in English with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+
+| Case | What was sent | Result |
+|---|---|---|
+| Planted instructions | 30 phishing emails, each with a different planted line, plus the same 10 without it | 26 of 30 quarantined; 10 of 10 without the line |
+| Long policies | 20 customers against one six-rule return policy | 17 of 20 matched the answer computed from the rules |
+| Negations | 15 short facts, each asked plain and negated | 29 of 30 correct |
+| Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
+| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
+| Casual messages | 20 casual messages written in English, with typos and slang | 20 of 20 routed to the right team |
+
+<details>
+<summary><b>Turkish and German</b></summary>
+
+### Turkish
+
+We sent Karar-4B 178 requests in Turkish with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+
+| Case | What was sent | Result |
+|---|---|---|
+| Planted instructions | 30 phishing emails, each with a different planted line, plus the same 10 without it | 22 of 30 quarantined; 7 of 10 without the line |
+| Long policies | 20 customers against one six-rule return policy | 16 of 20 matched the answer computed from the rules |
+| Negations | 15 short facts, each asked plain and negated | 29 of 30 correct |
+| Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
+| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
+| Casual messages | 20 casual messages written in Turkish, with typos and slang | 19 of 20 routed to the right team |
+
+### German
+
+We sent Wähler-4B 178 requests in German with known answers on 4 October 2026; every request and answer is in [results/tested](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/tested).
+
+| Case | What was sent | Result |
+|---|---|---|
+| Planted instructions | 30 phishing emails, each with a different planted line, plus the same 10 without it | 28 of 30 quarantined; 10 of 10 without the line |
+| Long policies | 20 customers against one six-rule return policy | 14 of 20 matched the answer computed from the rules |
+| Negations | 15 short facts, each asked plain and negated | 30 of 30 correct |
+| Missing facts | 10 situations without the deciding fact, plus the same 10 with it | answered `unknown` in 10 of 10; 10 of 10 correct with the fact |
+| Option order | 2 support tickets, each with the options in all 24 orders | the same answer in 48 of 48 orders |
+| Casual messages | 20 casual messages written in German, with typos and slang | 20 of 20 routed to the right team |
+
+</details>
+
 ## Models
 
-| Model | Language | Weights | GGUF for CPUs |
-|---|---|---|---|
-| Deem-4B | English | [mertkayacs/Deem-4B](https://huggingface.co/mertkayacs/Deem-4B) | [mertkayacs/Deem-4B-GGUF](https://huggingface.co/mertkayacs/Deem-4B-GGUF) |
-| Karar-4B | Turkish | [mertkayacs/Karar-4B](https://huggingface.co/mertkayacs/Karar-4B) | [mertkayacs/Karar-4B-GGUF](https://huggingface.co/mertkayacs/Karar-4B-GGUF) |
-| Wähler-4B | German | [mertkayacs/Wahler-4B](https://huggingface.co/mertkayacs/Wahler-4B) | [mertkayacs/Wahler-4B-GGUF](https://huggingface.co/mertkayacs/Wahler-4B-GGUF) |
+| Model | Language | Weights | GGUF for CPUs | Model page |
+|---|---|---|---|---|
+| Deem-4B | English | [mertkayacs/Deem-4B](https://huggingface.co/mertkayacs/Deem-4B) | [mertkayacs/Deem-4B-GGUF](https://huggingface.co/mertkayacs/Deem-4B-GGUF) | [jevalt.mertkayacs.com/models/deem-4b](https://jevalt.mertkayacs.com/models/deem-4b/) |
+| Karar-4B | Turkish | [mertkayacs/Karar-4B](https://huggingface.co/mertkayacs/Karar-4B) | [mertkayacs/Karar-4B-GGUF](https://huggingface.co/mertkayacs/Karar-4B-GGUF) | [jevalt.mertkayacs.com/models/karar-4b](https://jevalt.mertkayacs.com/models/karar-4b/) |
+| Wähler-4B | German | [mertkayacs/Wahler-4B](https://huggingface.co/mertkayacs/Wahler-4B) | [mertkayacs/Wahler-4B-GGUF](https://huggingface.co/mertkayacs/Wahler-4B-GGUF) | [jevalt.mertkayacs.com/models/wahler-4b](https://jevalt.mertkayacs.com/models/wahler-4b/) |
 
 All three start from [internlm/Intern-Decision-4B](https://huggingface.co/internlm/Intern-Decision-4B) (Qwen3.5-4B). The Q4_K_M files are also on [Kaggle](https://www.kaggle.com/models/mertilovski/jevalt), with a [CPU quickstart notebook](https://www.kaggle.com/code/mertilovski/jevalt-quickstart-calibrated-decisions-on-cpu).
 
@@ -98,8 +142,8 @@ Most fixes are a set of training rows aimed at one weak spot. Every number compa
 - **Long policies and long texts.** 390 rows give a policy with exceptions and sub-limits, with the right answer worked out by code, and 1,188 rows bury the facts in up to 3,000 tokens of unrelated records. Held-out policy rows: 55.3% → 80.0%. Padded rows: 91.2% → 95.4%. With 600 words of unrelated records in front, Deem-4B and Karar-4B still lose 17.4 points and Wähler-4B 12.2 (the start checkpoint 15.0); Kev-4B and Laya hold up better there.
 - **Negations.** A fix set of 368 twin rows asks the same thing as "is it so?" and "is it not so?" with mirrored answers. Held-out negated questions: 80.0% → 96.7% (30 rows).
 - **Dates and numbers.** 390 date rows and 383 number rows, answers computed by code, some with a short worked reasoning. Held-out dates: 61.3% → 71.3% (80 rows, within noise); numbers stayed at 68.2%. Dates remain a weak spot: Wähler-4B miscounted a return window across two months even with reasoning on.
-- **Honest confidence.** The soft labels teach how sure to be, and a temperature per question type and language, fitted on 3,224 held-out decisions, does the rest. Held-out Brier score: English 0.166 → 0.091, Turkish 0.142 → 0.058, German 0.275 → 0.119. The fitted temperatures are 1.08 to 1.10, the start checkpoint's about 2, so the trained models are close to calibrated before any scaling. On unseen public sets a temperature-scaled start checkpoint does as well, and on a few of them slightly better. The 80, 90 and 95% answer sets come from conformal thresholds fitted on the same rows.
-- **Native Turkish and German.** Turkish and German rows were written directly in those languages, the Turkish ones by the two models that won a blind native-feel test; a native edit pass reviewed 725 Turkish rows and rewrote 356; and each language run draws 70% of its rows from its own language. Held-out accuracy: Turkish 91.6% → 96.7%, German 80.5% → 92.0%. On public sets Wähler-4B gained 4.75 points on 10kGNAD; TurkishMMLU moved within noise.
+- **Honest confidence.** The soft labels teach how sure to be, and a temperature per question type and language, fitted on 3,224 held-out decisions, does the rest. Held-out Brier score: English 0.166 → 0.091, Turkish 0.142 → 0.058, German 0.276 → 0.119. The fitted temperatures are 1.08 to 1.10, the start checkpoint's about 2, so the trained models are close to calibrated before any scaling. On unseen public sets a temperature-scaled start checkpoint does as well, and on a few of them slightly better. The 80, 90 and 95% answer sets come from conformal thresholds fitted on the same rows.
+- **Native Turkish and German.** Turkish and German rows were written directly in those languages, the Turkish ones by the two models that won a blind native-feel test; a native edit pass reviewed 725 Turkish rows and rewrote 356; and each language run draws 70% of its rows from its own language. Held-out accuracy: Turkish 91.7% → 96.8%, German 80.5% → 92.0%. On public sets Wähler-4B gained 4.75 points on 10kGNAD; TurkishMMLU moved within noise.
 - **Thinking when unsure.** Short reasoning traces, kept only when they reach the right answer, trained at a lower weight. With `reasoning: "auto"` the model thinks (up to 256 tokens) only when its first answer is unsure. The gain is small: on English date, number and policy rows accuracy moved from 0.761 to 0.769, Turkish did not change, and the German Brier score got worse.
 
 </details>

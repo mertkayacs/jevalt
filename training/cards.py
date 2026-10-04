@@ -12,6 +12,8 @@ import json
 REPO = "https://github.com/mertkayacs/jevalt"
 PLAYGROUND = "https://github.com/mertkayacs/jevoss"
 SPACE = "https://huggingface.co/spaces/mertkayacs/JevAlt"
+SITE = "https://jevalt.mertkayacs.com"
+PROBLEMS = "https://huggingface.co/datasets/mertkayacs/emberwick-videos/resolve/main/problems"
 
 BIBTEX = """```bibtex
 @software{kaya2026jevalt,
@@ -24,11 +26,12 @@ BIBTEX = """```bibtex
 ```"""
 
 MODELS = {
-    "en": {"name": "Deem-4B", "repo": "Deem-4B", "language": "English", "native": None},
+    "en": {"name": "Deem-4B", "repo": "Deem-4B", "language": "English", "native": None, "page": "deem-4b"},
     "tr": {
         "name": "Karar-4B",
         "repo": "Karar-4B",
         "language": "Turkish",
+        "page": "karar-4b",
         "native": (
             "<details>\n<summary><b>Türkçe özet</b></summary>\n\n"
             "Karar-4B, Türkçe yazılmış kararlar üzerinde eğitilmiş açık bir modeldir. Bir durum ve "
@@ -41,6 +44,7 @@ MODELS = {
         "name": "Wähler-4B",
         "repo": "Wahler-4B",
         "language": "German",
+        "page": "wahler-4b",
         "native": (
             "<details>\n<summary><b>Deutsche Zusammenfassung</b></summary>\n\n"
             "Wähler-4B ist ein offenes Entscheidungsmodell, das auf deutschsprachigen Entscheidungen "
@@ -175,6 +179,18 @@ def media_block(lang: str) -> str:
             f"*{GIF_CAPTION}* [More clips]({VIDEOS})\n\n"
             f"{_video('en')}\n\n*{FILM_CAPTION}*\n\n"
             f"{native_block(lang)}")
+
+
+def problems_block(tested: str) -> str:
+    """The problem film and the tested table, right after the intro. `tested` is tested_md.table(lang)."""
+    if not tested:
+        return ""
+    return (f'## What it fixes\n\n'
+            f'<video controls playsinline preload="metadata" poster="{PROBLEMS}/jevalt-problems-en.jpg" '
+            f'src="{PROBLEMS}/jevalt-problems-en-1080p.mp4"></video>\n\n'
+            f'The 103-second film, sound on. Also in [Türkçe]({PROBLEMS}/jevalt-problems-tr-1080p.mp4) '
+            f'and [Deutsch]({PROBLEMS}/jevalt-problems-de-1080p.mp4).\n\n'
+            f'## Tested on the live model\n\n{tested}\n\n')
 
 
 def _bold_best(values: list[float | None], cells: list[str], higher: bool) -> list[str]:
@@ -369,8 +385,10 @@ def card(
     examples: str = "",
     examples_url: str = "",
     fixes: str = "",
+    tested: str = "",
 ) -> str:
-    """`fixes` is the folded "How we fixed each problem" section (workspace release/how_md.py), placed after the results."""
+    """`fixes` is the folded "How we fixed each problem" section (workspace release/how_md.py), placed after the results.
+    `tested` is the "Tested on the live model" table (workspace release/tested_md.py), placed after the intro."""
     m = MODELS[lang]
     name = m["name"]
     ram = ""
@@ -409,9 +427,9 @@ def card(
 
 {article} {m['language']} decision model with the Jev API. You send a state and typed questions (Choice, Score, Noul) and get a calibrated probability for every option. It can think before it answers, it can say "unknown", and the Q4_K_M build runs on your own machine in about 3 GB of RAM.
 
-**[Try it](#try-it) · [Run it](#run-it) · [Results](#results) · [Use and limits](#use-and-limits) · [Code and links](#code-and-links)**
+**[Try it](#try-it) · [Model page]({SITE}/models/{m['page']}/) · [Run it](#run-it) · [Results](#results) · [Use and limits](#use-and-limits) · [Code and links](#code-and-links)**
 
-{media_block(lang) if media else ''}{try_it}| | |
+{problems_block(tested)}{media_block(lang) if media else ''}{try_it}| | |
 |---|---|
 | Start checkpoint | [internlm/Intern-Decision-4B](https://huggingface.co/internlm/Intern-Decision-4B) (Qwen3.5-4B) |
 | Languages | {m['language']} first, the others still work |
@@ -459,6 +477,7 @@ client = TypeSafeClient(api_key="local", base_url="http://127.0.0.1:8000")
 - Try it online: [Space]({SPACE})
 - The village game: [Emberwick](https://emberwick.mertkayacs.com)
 - Project site: [jevalt.mertkayacs.com](https://jevalt.mertkayacs.com)
+- This model's page: [jevalt.mertkayacs.com/models/{m['page']}]({SITE}/models/{m['page']}/)
 
 If this is useful to you, a star on [GitHub]({REPO}) helps other people find it.
 """
@@ -529,7 +548,7 @@ def gguf_card(lang: str, export_report: dict | None, memory_report: dict | None)
 
 Quantized GGUF files for {name}, the {m['language']} decision model, for CPUs and small machines. The Q4_K_M file is the default; Q5_K_M and Q8_0 are higher fidelity at the cost of speed and memory.
 
-**[Files](#files) · [Use with jevalt](#use-with-jevalt) · [Code and links](#code-and-links)** · Examples and results: [{name} card](https://huggingface.co/mertkayacs/{repo}#try-it) · Try it: [Space]({SPACE})
+**[Files](#files) · [Use with jevalt](#use-with-jevalt) · [Code and links](#code-and-links)** · Examples and results: [{name} card](https://huggingface.co/mertkayacs/{repo}#try-it) · [Tested on the live model](https://huggingface.co/mertkayacs/{repo}#tested-on-the-live-model) · [Model page]({SITE}/models/{m['page']}/) · Try it: [Space]({SPACE})
 
 ![{GIF_CAPTION}]({VIDEOS}/resolve/main/gifs/emberwick-en.gif)
 

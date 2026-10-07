@@ -2,6 +2,8 @@
 
 Give JevAlt a situation, a question and answer options. Its three 4B language models choose between the options and return a probability for each, for tasks such as routing support tickets or checking a written policy. They run locally so these decisions can be inspected and tested on your own data.
 
+<a href="https://emberwick.mertkayacs.com"><picture><source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/mertkayacs/jevalt/main/docs/assets/emberwick-barn-fire-en.webp"><img src="https://raw.githubusercontent.com/mertkayacs/jevalt/media/emberwick-en.webp" width="720" alt="Emberwick village game: villagers fight a barn fire, shelter from a storm and gather herbs, and each label shows the action a JevAlt model chose with its probability"></picture></a>
+
 [Try an example](https://huggingface.co/spaces/mertkayacs/JevAlt) or run a model below.
 
 ## Run locally
@@ -29,6 +31,8 @@ Karar-4B is one of the best open Turkish decision models at 4B parameters, and e
 | [Deem-4B](https://huggingface.co/mertkayacs/Deem-4B) | English | 94.7% | 84.7% |
 | [Karar-4B](https://huggingface.co/mertkayacs/Karar-4B) | Turkish | 96.8% | 87.1% |
 | [Wähler-4B](https://huggingface.co/mertkayacs/Wahler-4B) | German | 92.0% | 81.1% |
+
+<img src="https://raw.githubusercontent.com/mertkayacs/jevalt/main/docs/assets/charts/langs.png" width="720" alt="Accuracy on English, Turkish and German decisions and on the typed-decisions test suite: Deem-4B, Karar-4B and Wähler-4B against Kev-4B and Laya">
 
 These tests come from JevAlt's own data pipeline and favour JevAlt. [Results and evaluation records](https://huggingface.co/datasets/mertkayacs/jevalt-bench/tree/main/results/comparison) include calibration scores and comparisons with Laya and the starting checkpoint.
 
@@ -74,4 +78,4 @@ Code and weights: [Apache-2.0](LICENSE). JevAlt is independent of TypeSafe AI; J
 
 </details>
 
-An [Eschatia Labs](https://eschatialabs.com) project by [Mert Kaya](https://mertkayacs.com).
+<a href="https://eschatialabs.com"><picture><source media="(min-resolution: 2dppx)" srcset="https://eschatialabs.com/brand/lockup-46@2x.png"><img src="https://eschatialabs.com/brand/lockup-46@1x.png" width="124" height="46" alt="Eschatia Labs"></picture></a><br>An [Eschatia Labs](https://eschatialabs.com) project by [Mert Kaya](https://mertkayacs.com).

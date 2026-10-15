@@ -6,6 +6,7 @@ abstract: "Three open 4B decision models (Deem-4B for English, Karar-4B for Turk
 authors:
   - family-names: Kaya
     given-names: Mert
+    orcid: "https://orcid.org/0009-0006-7018-3027"
 version: 0.1.0
 date-released: 2026-10-01
 license: Apache-2.0

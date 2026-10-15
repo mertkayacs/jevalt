@@ -4,9 +4,9 @@
 
 <p align="center">
   <a href="https://github.com/mertkayacs/jevalt"><img src="https://img.shields.io/github/stars/mertkayacs/jevalt?style=flat&logo=github" alt="GitHub stars"></a>
-  <a href="https://huggingface.co/mertkayacs/Deem-4B"><img src="https://img.shields.io/badge/Deem-4B%20downloads-215-725114?style=flat&logo=huggingface" alt="Deem-4B downloads"></a>
-  <a href="https://huggingface.co/mertkayacs/Karar-4B"><img src="https://img.shields.io/badge/Karar-4B%20downloads-217-725114?style=flat&logo=huggingface" alt="Karar-4B downloads"></a>
-  <a href="https://huggingface.co/mertkayacs/Wahler-4B"><img src="https://img.shields.io/badge/Wahler-4B%20downloads-265-725114?style=flat&logo=huggingface" alt="Wahler-4B downloads"></a>
+  <a href="https://huggingface.co/mertkayacs/Deem-4B"><img src="https://img.shields.io/badge/Deem--4B%20downloads%20(2026--10--15)-215-725114?style=flat&logo=huggingface" alt="Deem-4B downloads"></a>
+  <a href="https://huggingface.co/mertkayacs/Karar-4B"><img src="https://img.shields.io/badge/Karar--4B%20downloads%20(2026--10--15)-217-725114?style=flat&logo=huggingface" alt="Karar-4B downloads"></a>
+  <a href="https://huggingface.co/mertkayacs/Wahler-4B"><img src="https://img.shields.io/badge/Wahler--4B%20downloads%20(2026--10--15)-265-725114?style=flat&logo=huggingface" alt="Wahler-4B downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat" alt="Apache-2.0"></a>
 </p>
 
@@ -23,7 +23,7 @@ Give JevAlt a situation, a question and answer options. Its three 4B language mo
 - **Calibrated probabilities** and a standard Jev API mean existing clients can drop it in.
 - **Open weights and data** under Apache-2.0, with training code, benchmark results and a live-test record.
 
-> "JevAlt is one of the most complete open local decision-model setups, with per-option probabilities in three languages and a benchmark anyone can run." - Mert Kaya
+JevAlt is one of the most complete open local decision-model setups, with per-option probabilities in three languages and a benchmark anyone can run.
 
 ## Run locally
 

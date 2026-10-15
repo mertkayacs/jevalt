@@ -1,6 +1,4 @@
-<h1 align="center">JevAlt</h1>
-
-<p align="center"><b>Three 4B open-weights language models choose between options and return a probability for each, for routing, policy checks and typed decisions on your own hardware.</b></p>
+<p align="center"><img src="assets/banner.webp" alt="JevAlt. Free and open source under the Apache-2.0 license." width="1200"></p>
 
 <p align="center">
   <a href="https://github.com/mertkayacs/jevalt"><img src="https://img.shields.io/github/stars/mertkayacs/jevalt?style=flat&logo=github" alt="GitHub stars"></a>
@@ -8,7 +6,12 @@
   <a href="https://huggingface.co/mertkayacs/Karar-4B"><img src="https://img.shields.io/badge/Karar--4B%20downloads%20(2026--10--15)-217-725114?style=flat&logo=huggingface" alt="Karar-4B downloads"></a>
   <a href="https://huggingface.co/mertkayacs/Wahler-4B"><img src="https://img.shields.io/badge/Wahler--4B%20downloads%20(2026--10--15)-265-725114?style=flat&logo=huggingface" alt="Wahler-4B downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat" alt="Apache-2.0"></a>
+  <img src="https://img.shields.io/badge/free%20and%20open%20source-yes-0F6B66.svg" alt="free and open source">
 </p>
+
+JevAlt is free and open source under the Apache-2.0 license.
+
+<p align="center"><b>Three 4B open-weights language models choose between options and return a probability for each, for routing, policy checks and typed decisions on your own hardware.</b></p>
 
 Give JevAlt a situation, a question and answer options. Its three 4B language models choose between the options and return a probability for each, for tasks such as routing support tickets or checking a written policy. They run locally so these decisions can be inspected and tested on your own data.
 
